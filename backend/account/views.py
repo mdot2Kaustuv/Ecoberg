@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from account.models import Account , UserManager
-from account.serializers import UserSerializer , MyTokenObtainPairSerializer
+from account.serializers import UserSerializer ,RegisterSerializer, MyTokenObtainPairSerializer
 from rest_framework.decorators import api_view , permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
@@ -11,7 +11,7 @@ class MyTokenObtainPairView( TokenObtainPairView):
 
 class RegisterView(generics.CreateAPIView):
     queryset = Account.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
 

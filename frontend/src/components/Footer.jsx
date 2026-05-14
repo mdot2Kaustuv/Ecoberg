@@ -9,20 +9,8 @@ const Footer = () => {
         <hr className='border-bottom'/>
 
         <p className='text-center text-muted mb-0'>© 2026 Ecoberg.</p>
-
-
-
-
-    
-
-
-
-
-
-
-
-
-        </footer>
+        
+         </footer>
     
     
     

@@ -1,13 +1,21 @@
 /* Custom Properties for an Eco-Friendly Theme */
 :root {
   --eco-green: #16a34a;
+  --eco-medium: #15803d;
   --eco-dark: #064e3b;
   --eco-light: #f0fdf4;
   --earth-brown: #78350f;
+  --earth-muted: #a16207;
   --sky-blue: #0ea5e9;
-  --text-main: #1a2e1a;
+  --sky-mist: #e0f2fe;
+  --text-main: #111827;
+  --text-light: #4b5563;
   --white: #ffffff;
-  --transition: all 0.3s ease;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Smoother, more organic transition */
+  --shadow-sm: 0 2px 8px rgba(6, 78, 59, 0.05);
+  --shadow-md: 0 10px 30px rgba(6, 78, 59, 0.08);
 }
 
 /* 1. Global Reset & Full Height Alignment */
@@ -25,88 +33,137 @@ html, body, #root {
 
 body {
   font-family: 'Inter', -apple-system, sans-serif;
-  /* Matching the purple-blue gradient from image_a271d8.jpg but making it 
-     adjustable if you want to switch to "Eco" greens later */
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* Replaced the purple gradient with a deep forest morning gradient */
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
+  background-attachment: fixed;
   color: var(--text-main);
-  line-height: 1.6;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* 2. Main App Container (Horizontal & Vertical Alignment) */
+/* 2. Main App Container */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
+  /* Subtle organic background pattern if desired */
+  position: relative;
 }
 
-/* 3. Header Styling (Extended Horizontally) */
+/* 3. Header Styling (Eco-Glassmorphism) */
 header {
   width: 100%;
-  background-color: var(--eco-green);
-  padding: 1rem 5%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 1.25rem 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  color: var(--white);
+  box-shadow: var(--shadow-sm);
+  color: var(--eco-dark);
   z-index: 1000;
+  position: sticky;
+  top: 0;
 }
 
-/* 4. Main Content Area (Centering the Routes) */
+/* 4. Main Content Area */
 main {
   flex: 1; 
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Vertical Center */
-  align-items: center;     /* Horizontal Center */
-  padding: 2rem;
+  justify-content: center; 
+  align-items: center;    
+  padding: 3rem 2rem;
 }
 
-/* 5. Typography Alignment */
+/* 5. Typography Alignment (Earth & Leaf Accents) */
 h1, .home-title {
-  color: var(--white);
+  color: var(--eco-dark);
   font-size: 3.5rem;
   font-weight: 800;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  margin-bottom: 1rem;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
   text-align: center;
+  line-height: 1.1;
+  /* Soft, natural text shadow instead of heavy black */
+  text-shadow: 0 4px 12px rgba(6, 78, 59, 0.1);
 }
 
-/* 6. Footer Alignment */
+/* A soft paragraph style helper for eco theme */
+main p {
+  color: var(--text-light);
+  max-width: 600px;
+  text-align: center;
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+}
+
+/* 6. Footer Alignment (Grounded Earthy Feel) */
 footer {
   width: 100%;
-  padding: 1.5rem;
-  background-color: rgba(0, 0, 0, 0.2);
-  color: rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  background-color: var(--eco-dark);
+  color: var(--eco-light);
   text-align: center;
-  backdrop-filter: blur(5px);
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  border-top: 4px solid var(--eco-green);
 }
 
-/* 7. Reusable Button Style (Eco-Themed) */
+/* 7. Reusable Button Style (Leaf Shape Accent) */
 .eco-btn {
-  background-color: var(--eco-green);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 50px;
+  background: linear-gradient(135deg, var(--eco-green) 0%, var(--eco-medium) 100%);
+  color: var(--white);
+  padding: 0.875rem 2rem;
+  /* Slightly asymmetrical border-radius gives it a subtle "leaf" or organic shape */
+  border-radius: 24px 4px 24px 24px;
   border: none;
   font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: var(--transition);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
 }
 
 .eco-btn:hover {
-  background-color: var(--eco-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  background: linear-gradient(135deg, var(--eco-medium) 0%, var(--eco-dark) 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(6, 78, 59, 0.4);
+  /* Reverse the leaf shape on hover for an interactive organic feel */
+  border-radius: 4px 24px 24px 24px;
+}
+
+.eco-btn:active {
+  transform: translateY(-1px);
+}
+
+/* BONUS: Optional Card Wrapper for Content Blocks */
+.eco-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 2.5rem;
+  border-radius: 24px;
+  box-shadow: var(--shadow-md);
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  h1 { font-size: 2.5rem; }
-  header { padding: 1rem; }
+  h1, .home-title { font-size: 2.25rem; }
+  header { padding: 1rem 4%; }
+  main { padding: 2rem 1rem; }
+  .eco-card { padding: 1.5rem; border-radius: 16px; }
 }

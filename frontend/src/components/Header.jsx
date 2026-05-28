@@ -26,12 +26,12 @@ const Header = () => {
             <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold shadow-sm transition-colors group-hover:bg-emerald-700">
               <Leaf className="h-5 w-5 fill-white/10 text-white" />
             </div>
-            <span className="font-display font-extrabold text-xl tracking-tight text-emerald-950">
+            <span className="font-display font-extrabold text-xl tracking-tight text-emerald-600">
               Eco<span className="text-emerald-600">Berg</span>
             </span>
           </Link>
 
-          {/* Desktop Nav */}
+          {/* Navigation */}
           <nav className="hidden md:flex space-x-1 items-center">
             {navLinks.map((link) => (
               <Link
@@ -63,7 +63,7 @@ const Header = () => {
             </Link>
           </nav>
 
-          {/* Mobile hamburger button */}
+          
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -79,7 +79,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile*/}
       {isOpen && (
         <div className="md:hidden bg-white/95 backdrop-blur-md border-b border-emerald-100 px-4 pt-2 pb-4 space-y-1.5 shadow-lg shadow-emerald-950/5 animate-in fade-in slide-in-from-top-3 duration-200" id="mobile-menu">
           {navLinks.map((link) => (

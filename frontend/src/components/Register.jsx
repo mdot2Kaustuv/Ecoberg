@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import AuthContext from '../context/AuthContext'
-import '../assets/css/main.css'
+import AuthContext from '../utils/AuthContext.jsx'
 
 const Register = () => {
   const { registerUser, loading } = useContext(AuthContext)
@@ -80,93 +79,125 @@ const Register = () => {
   }
 
   if (loading) {
-    return <div className="loading-spinner">Loading...</div>
+ return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600"></div>
+        <span className="ml-3 text-emerald-800 font-medium">Loading...</span>
+      </div>
+    )
   }
 
   return (
-    <div className="auth-container">
-      <div className="auth-content">
-        <div className="auth-header">
-          <h1 className="auth-title">Create Account</h1>
-          <p className="auth-subtitle">Join us today</p>
+    <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-slate-100 relative overflow-hidden">
+        
+        {/* Header */}
+        <div className="text-center">
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Create Account</h1>
+          <p className="mt-2 text-sm text-slate-600">
+            Join <span className="text-emerald-600 font-semibold">EcoBerg</span> today
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">Email Address</label>
+        {/* Registration */}
+        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+          
+          {/* Email  */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email" className="text-sm font-semibold text-slate-700">Email Address</label>
             <input
               id="email"
               type="email"
               name="email"
-              className={`form-input ${errors.email ? 'error' : ''}`}
+              className={`w-full px-4 py-2.5 rounded-lg border text-sm transition-all focus:outline-none focus:ring-2 ${
+                errors.email 
+                  ? 'border-red-400 focus:ring-red-200' 
+                  : 'border-slate-300 focus:border-emerald-500 focus:ring-emerald-100'
+              }`}
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
             />
-            {errors.email && <span className="error-message">{errors.email}</span>}
+            {errors.email && <span className="text-xs font-medium text-red-500 mt-0.5">{errors.email}</span>}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="username" className="form-label">Username</label>
+          {/* Username  */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="username" className="text-sm font-semibold text-slate-700">Username</label>
             <input
               id="username"
               type="text"
               name="username"
-              className={`form-input ${errors.username ? 'error' : ''}`}
+              className={`w-full px-4 py-2.5 rounded-lg border text-sm transition-all focus:outline-none focus:ring-2 ${
+                errors.username 
+                  ? 'border-red-400 focus:ring-red-200' 
+                  : 'border-slate-300 focus:border-emerald-500 focus:ring-emerald-100'
+              }`}
               placeholder="Choose your username"
               value={formData.username}
               onChange={handleChange}
             />
-            {errors.username && <span className="error-message">{errors.username}</span>}
+            {errors.username && <span className="text-xs font-medium text-red-500 mt-0.5">{errors.username}</span>}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password" className="form-label">Password</label>
+          {/* Password Input */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="password" className="text-sm font-semibold text-slate-700">Password</label>
             <input
               id="password"
               type="password"
               name="password"
-              className={`form-input ${errors.password ? 'error' : ''}`}
+              className={`w-full px-4 py-2.5 rounded-lg border text-sm transition-all focus:outline-none focus:ring-2 ${
+                errors.password 
+                  ? 'border-red-400 focus:ring-red-200' 
+                  : 'border-slate-300 focus:border-emerald-500 focus:ring-emerald-100'
+              }`}
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
             />
-            {errors.password && <span className="error-message">{errors.password}</span>}
+            {errors.password && <span className="text-xs font-medium text-red-500 mt-0.5">{errors.password}</span>}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password2" className="form-label">Confirm Password</label>
+         
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="password2" className="text-sm font-semibold text-slate-700">Confirm Password</label>
             <input
               id="password2"
               type="password"
               name="password2"
-              className={`form-input ${errors.password2 ? 'error' : ''}`}
+              className={`w-full px-4 py-2.5 rounded-lg border text-sm transition-all focus:outline-none focus:ring-2 ${
+                errors.password2 
+                  ? 'border-red-400 focus:ring-red-200' 
+                  : 'border-slate-300 focus:border-emerald-500 focus:ring-emerald-100'
+              }`}
               placeholder="••••••••"
               value={formData.password2}
               onChange={handleChange}
             />
-            {errors.password2 && <span className="error-message">{errors.password2}</span>}
+            {errors.password2 && <span className="text-xs font-medium text-red-500 mt-0.5">{errors.password2}</span>}
           </div>
 
+          { /* Submit  */ }
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`submit-btn ${isSubmitting ? 'loading' : ''}`}
+            className={`w-full mt-6 px-5 py-3 text-sm font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-lg shadow-md transition-all duration-150 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed`}
           >
             {isSubmitting ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
-        <div className="auth-footer">
-          <p className="footer-text">
-            Already have an account?{' '}
-            <Link to="/login" className="auth-link">
-              Sign in
-            </Link>
-          </p>
+        {/* Footer Link */}
+        <div className="text-center pt-4 border-t border-slate-100 text-sm text-slate-600">
+          Already have an account?{' '}
+          <Link to="/login" className="font-semibold text-emerald-700 hover:text-emerald-800 hover:underline transition-all">
+            Sign in
+          </Link>
         </div>
 
-        <div className="decorative-element"></div>
+        {/* Top Accent Bar */}
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-emerald-600"></div>
       </div>
     </div>
   )

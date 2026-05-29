@@ -1,34 +1,45 @@
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny 
 from .serializers import FootprintResultSerializer
 from .calculator import CarbonCalculator
+from .models import FootprintCalculation 
 
-class Calculate_Footprint(APIView):
+class CalculateFootprint(APIView):
     permission_classes = [AllowAny] 
 
     def post(self, request):
         serializer = FootprintResultSerializer(data=request.data)
         
         if serializer.is_valid():
-            answers = serializer.validated_data['inputs']
-     
-            results = CarbonCalculator.calculate(answers)
+            answers_dict = serializer.validated_data.get('inputs') or request.data.get('inputs', {})
             
-            record = serializer.save(
+            if not answers_dict:
+                return Response(
+                    {"error": "The 'inputs' object cannot be empty or missing."}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+          
+            calc_results = CarbonCalculator.calculate(answers_dict)
+            final_total = calc_results['total_footprint']
+            final_score = calc_results['sustainability_score']
+            breakdown_data = calc_results['breakdown']
+            
+            record = FootprintCalculation.objects.create(
                 user=request.user if request.user.is_authenticated else None,
-                total_footprint=results['total_footprint'],
-                sustainability_score=results['sustainability_score'],
-                food_value=results['breakdown']['food'],
-                transport_value=results['breakdown']['transportation'],
-                energy_value=results['breakdown']['energy'],
-                shopping_value=results['breakdown']['shopping'],
+                quiz_input=answers_dict,  
+                totalfootprint=final_total,
+                sustainability=final_score, 
+                food_footprint=breakdown_data['food'],
+                transportation_footprint=breakdown_data['transportation'],
+                energy_footprint=breakdown_data['energy'],
+                shopping_footprint=breakdown_data['shopping'],
             )
-            
-            # 4. Return the full saved database record along with the dynamic recommendations
+
             response_payload = FootprintResultSerializer(record).data
-            response_payload['recommendations'] = results['recommendations']
+            response_payload['recommendations'] = calc_results['recommendations']
             
             return Response(response_payload, status=status.HTTP_201_CREATED)
             

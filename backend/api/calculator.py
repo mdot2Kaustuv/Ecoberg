@@ -79,11 +79,6 @@ class CarbonCalculator:
 
         final_energy = round(energy_baseline * energy_renewable_mult * heating_mult, 2)
 
-
-
-
-
-
         shopping_baseline = 1.5
         shopping_style = answers.get('shopping_intensity', 'moderate')
         if shopping_style == 'frugal': shopping_baseline = 0.6

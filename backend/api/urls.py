@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import Calculate_Footprint
+from .views import  CalculateFootprint
 
 
 urlpatterns = [ 
-    path('calculate/', Calculate_Footprint.as_view(), name='calculate_footprint'),
+    path('calculate/', CalculateFootprint.as_view(), name='calculate_footprint'),
 ]

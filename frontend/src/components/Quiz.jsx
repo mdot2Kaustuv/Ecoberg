@@ -10,39 +10,39 @@ const steps = [
       {
         key: "food_diet",
         label: "What best describes your diet?",
-        tooltip: "Vegan eats no animal products, Vegetarian avoids meat, Pescatarian eats fish but no meat, Heavy meat eats meat daily.",
+        tooltip: "Vegan: no meat, dairy, or eggs. Vegetarian: no meat but eats dairy/eggs. Pescatarian: eats fish but no other meat. Low meat: meat 1-2 times a week. Standard meat: meat most days. Heavy meat: meat at almost every meal.",
         type: "select",
         options: [
-          { value: "vegan", label: "Vegan" },
-          { value: "vegetarian", label: "Vegetarian" },
-          { value: "pescatarian", label: "Pescatarian" },
-          { value: "low_meat", label: "Low Meat" },
-          { value: "standard_meat", label: "Standard Meat" },
-          { value: "heavy_meat", label: "Heavy Meat" },
+          { value: "vegan", label: "Vegan – no animal products at all" },
+          { value: "vegetarian", label: "Vegetarian – no meat, but dairy & eggs ok" },
+          { value: "pescatarian", label: "Pescatarian – fish only, no other meat" },
+          { value: "low_meat", label: "Low Meat – meat once or twice a week" },
+          { value: "standard_meat", label: "Standard – meat most days" },
+          { value: "heavy_meat", label: "Heavy Meat – meat at almost every meal" },
         ],
       },
       {
         key: "food_local",
         label: "How often do you buy locally sourced food?",
-        tooltip: "Locally sourced means food grown or produced within your region, reducing transport emissions.",
+        tooltip: "Locally sourced food is grown or produced close to where you live (within your country or region). It travels shorter distances, which means fewer transport emissions. 'Always' means nearly all your groceries are local; 'Rarely' means most come from supermarkets with no local sourcing.",
         type: "select",
         options: [
-          { value: "always", label: "Always" },
-          { value: "often", label: "Often" },
-          { value: "occasionally", label: "Occasionally" },
-          { value: "rarely", label: "Rarely" },
+          { value: "always", label: "Always – mostly local markets or farm shops" },
+          { value: "often", label: "Often – local produce when possible" },
+          { value: "occasionally", label: "Occasionally – sometimes local, sometimes not" },
+          { value: "rarely", label: "Rarely – mostly supermarket, no focus on local" },
         ],
       },
       {
         key: "food_waste",
         label: "How much food do you waste?",
-        tooltip: "Food waste refers to edible food thrown away. Zero means you waste almost nothing, High means you throw away a significant amount regularly.",
+        tooltip: "Food waste means edible food that gets thrown away. 'Almost none' means you plan meals carefully and rarely throw food out. 'High' means you often throw away leftovers, expired items, or unused groceries.",
         type: "select",
         options: [
-          { value: "zero", label: "Almost None" },
-          { value: "low", label: "Low" },
-          { value: "medium", label: "Medium" },
-          { value: "high", label: "High" },
+          { value: "zero", label: "Almost None – I rarely throw food away" },
+          { value: "low", label: "Low – occasional waste, mostly planned meals" },
+          { value: "medium", label: "Medium – some leftovers or items go to waste" },
+          { value: "high", label: "High – I throw away food regularly" },
         ],
       },
     ],
@@ -55,46 +55,46 @@ const steps = [
       {
         key: "trans_commute",
         label: "What is your primary mode of commute?",
-        tooltip: "Choose the transport you use most days. Gas car uses petrol/diesel, Electric car runs on electricity, Active travel means walking or cycling.",
+        tooltip: "Choose the transport you rely on most days. Gas car: runs on petrol or diesel. Hybrid: uses both fuel and electric power. Electric car: fully battery powered. Public transit: bus, train, or metro. Active travel: walking or cycling.",
         type: "select",
         options: [
-          { value: "gas_car", label: "Gas Car" },
-          { value: "hybrid_car", label: "Hybrid Car" },
-          { value: "electric_car", label: "Electric Car" },
-          { value: "public_transit", label: "Public Transit" },
-          { value: "active_travel", label: "Walk / Cycle" },
+          { value: "gas_car", label: "Gas Car – petrol or diesel engine" },
+          { value: "hybrid_car", label: "Hybrid Car – part fuel, part electric" },
+          { value: "electric_car", label: "Electric Car – fully battery powered" },
+          { value: "public_transit", label: "Public Transit – bus, train, or metro" },
+          { value: "active_travel", label: "Walk or Cycle – no engine" },
         ],
       },
       {
         key: "trans_mileage",
         label: "Weekly driving distance (miles)",
-        tooltip: "Estimate the total miles you drive per week including commute, errands, and trips. If you don't drive, enter 0.",
+        tooltip: "Add up all the miles you drive in a typical week — commute, errands, school runs, and trips. If you don't drive, enter 0. 1 kilometre = 0.62 miles.",
         type: "number",
         placeholder: "e.g. 100",
       },
       {
         key: "trans_car_size",
         label: "What size is your car?",
-        tooltip: "Compact cars are small hatchbacks, Sedan is a standard mid-size car, SUV/Truck are larger heavier vehicles. Select 'No Car' if you don't own one.",
+        tooltip: "Compact: small city car like a Suzuki Alto or VW Polo. Sedan/Mid-size: everyday family car like a Toyota Corolla or Honda Civic. SUV or Truck: large vehicle like a Ford F-150, Toyota RAV4, or Range Rover — these use significantly more fuel. No Car: select this if you don't own or regularly drive a car.",
         type: "select",
         options: [
-          { value: "compact", label: "Compact" },
-          { value: "sedan", label: "Sedan" },
-          { value: "suv_truck", label: "SUV / Truck" },
-          { value: "none", label: "No Car" },
+          { value: "compact", label: "Compact – small city car (e.g. VW Polo)" },
+          { value: "sedan", label: "Mid-size Sedan – family car (e.g. Toyota Corolla)" },
+          { value: "suv_truck", label: "SUV or Truck – large vehicle (e.g. Ford F-150)" },
+          { value: "none", label: "No Car – I don't drive regularly" },
         ],
       },
       {
         key: "trans_flights_short",
         label: "Short-haul flights per year (under 3 hrs)",
-        tooltip: "Count each one-way flight separately. A return trip counts as 2 flights. Short-haul is typically within the same country or nearby region.",
+        tooltip: "Count each one-way flight separately — a return trip = 2 flights. Short-haul is typically within the same country or a nearby country, under 3 hours of flying time. Example: London to Paris, Delhi to Mumbai.",
         type: "number",
         placeholder: "e.g. 2",
       },
       {
         key: "trans_flights_long",
         label: "Long-haul flights per year (over 3 hrs)",
-        tooltip: "Long-haul flights are international or cross-continental trips. Each one-way leg counts as 1 flight. These have a much higher carbon impact.",
+        tooltip: "Long-haul flights are international or cross-continental trips over 3 hours. These have a much higher carbon impact per trip. Example: London to New York, Mumbai to Sydney. Count each one-way leg as 1 flight.",
         type: "number",
         placeholder: "e.g. 1",
       },
@@ -108,37 +108,37 @@ const steps = [
       {
         key: "energy_size",
         label: "What type of home do you live in?",
-        tooltip: "Larger homes use more energy for heating, cooling and lighting. A studio is a single room, an apartment is a flat, a house is a standalone property.",
+        tooltip: "Larger homes use more energy for heating, cooling, and lighting. Studio: single open room. Apartment: flat in a building. Townhouse: multi-floor terraced home. Medium house: 2-3 bedroom detached home. Large house: 4+ bedrooms or a large detached property.",
         type: "select",
         options: [
-          { value: "studio", label: "Studio" },
-          { value: "apartment", label: "Apartment" },
-          { value: "townhouse", label: "Townhouse" },
-          { value: "house_medium", label: "Medium House" },
-          { value: "house_large", label: "Large House" },
+          { value: "studio", label: "Studio – single room flat" },
+          { value: "apartment", label: "Apartment – flat in a building" },
+          { value: "townhouse", label: "Townhouse – multi-floor terraced home" },
+          { value: "house_medium", label: "Medium House – 2 to 3 bedrooms" },
+          { value: "house_large", label: "Large House – 4 or more bedrooms" },
         ],
       },
       {
         key: "energy_renewables",
-        label: "What energy source do you use?",
-        tooltip: "Full Solar means your home runs mostly on solar panels. Partial Green means you have a green energy tariff or some renewables. Standard Grid is regular fossil-fuel electricity.",
+        label: "What energy source powers your home?",
+        tooltip: "Full Solar/Renewable: your home runs mostly on solar panels or a 100% green energy tariff. Partial Green: you have some renewable energy but still rely partly on the grid. Standard Grid: regular electricity from the national grid, mostly fossil fuels.",
         type: "select",
         options: [
-          { value: "full_solar", label: "Full Solar / Renewable" },
-          { value: "half_green", label: "Partial Green Energy" },
-          { value: "standard_grid", label: "Standard Grid" },
+          { value: "full_solar", label: "Full Solar or 100% Green Tariff" },
+          { value: "half_green", label: "Partial Green – some renewables, some grid" },
+          { value: "standard_grid", label: "Standard Grid – regular fossil fuel electricity" },
         ],
       },
       {
         key: "energy_heating",
         label: "What is your primary heating source?",
-        tooltip: "Heat pumps are the most efficient and low-carbon option. Natural gas is common but fossil-fuel based. Fuel oil has the highest emissions.",
+        tooltip: "Heat pump: uses electricity to extract heat from air or ground — very efficient and low carbon. Electric resistance: electric heaters or storage heaters — higher emissions than heat pumps. Natural gas: common boiler system — fossil fuel based. Fuel oil: oil-fired boiler — highest emissions of all options.",
         type: "select",
         options: [
-          { value: "heat_pump", label: "Heat Pump" },
-          { value: "electric_resist", label: "Electric Resistance" },
-          { value: "natural_gas", label: "Natural Gas" },
-          { value: "fuel_oil", label: "Fuel Oil" },
+          { value: "heat_pump", label: "Heat Pump – electric, most efficient" },
+          { value: "electric_resist", label: "Electric Heaters – plug-in or storage heaters" },
+          { value: "natural_gas", label: "Natural Gas Boiler – common gas central heating" },
+          { value: "fuel_oil", label: "Fuel Oil Boiler – oil-fired heating system" },
         ],
       },
     ],
@@ -151,34 +151,34 @@ const steps = [
       {
         key: "shopping_intensity",
         label: "How would you describe your shopping habits?",
-        tooltip: "Frugal means you only buy essentials and rarely shop for new items. Moderate is average consumer behaviour. Active means you frequently buy new clothes, gadgets, or goods.",
+        tooltip: "Frugal: you buy only what you need and rarely purchase new clothes, gadgets, or non-essentials. Moderate: you shop occasionally for new items but are not excessive. Active: you frequently buy new clothing, gadgets, home goods, or other non-essentials.",
         type: "select",
         options: [
-          { value: "frugal", label: "Frugal (buy only essentials)" },
-          { value: "moderate", label: "Moderate" },
-          { value: "active", label: "Active (frequent shopper)" },
+          { value: "frugal", label: "Frugal – only buy essentials, rarely shop for extras" },
+          { value: "moderate", label: "Moderate – occasional non-essential purchases" },
+          { value: "active", label: "Active Shopper – frequent new clothes, gadgets, goods" },
         ],
       },
       {
         key: "shopping_recycle",
-        label: "How well do you recycle?",
-        tooltip: "Extensive recycling means you sort all waste including glass, paper, plastic and compost. Standard is basic recycling. Poor means most waste goes to general landfill.",
+        label: "How well do you recycle and sort waste?",
+        tooltip: "Extensive: you carefully separate paper, plastic, glass, metal, and compost organic waste. Standard: you recycle the basics like bottles and cans but don't sort everything. Poor/Rarely: most of your waste goes into a single bin without sorting.",
         type: "select",
         options: [
-          { value: "extensive", label: "Extensively" },
-          { value: "standard", label: "Standard" },
-          { value: "poor", label: "Rarely" },
+          { value: "extensive", label: "Extensively – sort all waste including compost" },
+          { value: "standard", label: "Standard – recycle bottles, cans, and paper" },
+          { value: "poor", label: "Rarely – most waste goes in one bin" },
         ],
       },
       {
         key: "shopping_devices",
-        label: "How often do you replace electronics?",
-        tooltip: "Manufacturing electronics has a high carbon cost. Replacing devices only when broken is the most sustainable choice. Annually means you upgrade gadgets every year.",
+        label: "How often do you replace phones, laptops, or electronics?",
+        tooltip: "Manufacturing electronics produces a significant amount of carbon. Replacing devices only when broken is the most sustainable approach. Every few years is average. Annually means upgrading your phone, laptop, or other gadgets every year even if still working.",
         type: "select",
         options: [
-          { value: "annually", label: "Every year" },
-          { value: "periodic", label: "Every few years" },
-          { value: "need", label: "Only when broken" },
+          { value: "annually", label: "Every Year – upgrade gadgets annually" },
+          { value: "periodic", label: "Every Few Years – replace when outdated" },
+          { value: "need", label: "Only When Broken – use until it stops working" },
         ],
       },
     ],
@@ -186,6 +186,54 @@ const steps = [
 ];
 
 const impactColor = { High: "#ef4444", Medium: "#f59e0b", Low: "#22c55e" };
+
+const friendlyRecommendations = {
+  rec_food_diet: {
+    what: "Try going meat-free at least one day a week.",
+    why: "Producing beef and lamb releases large amounts of greenhouse gases. Even one meat-free day per week can noticeably reduce your food footprint.",
+    how: "Replace meat with lentils, chickpeas, beans, tofu, or eggs. Try a vegetarian curry, pasta, or stir-fry — these are cheap, filling, and easy to make.",
+  },
+  rec_food_waste: {
+    what: "Plan your meals before you shop to cut food waste.",
+    why: "Food that ends up in landfill produces methane, a powerful greenhouse gas. Wasting less food is one of the simplest ways to reduce emissions.",
+    how: "Write a weekly meal plan, make a shopping list, and stick to it. Use leftovers for lunch the next day. Store food properly to extend its life.",
+  },
+  rec_trans_commute: {
+    what: "Switch to an electric or hybrid vehicle for your daily commute.",
+    why: "Petrol and diesel cars are among the biggest sources of personal carbon emissions. Electric vehicles produce zero direct emissions.",
+    how: "If a full EV is too costly, start with a hybrid. Check for government grants or tax credits available in your country for EV purchases.",
+  },
+  rec_trans_carpool: {
+    what: "Share car journeys or use public transport three times a week.",
+    why: "Carpooling and public transit spread emissions across more people, dramatically cutting the per-person carbon cost of travel.",
+    how: "Ask colleagues if anyone lives nearby and wants to share the commute. Use apps like BlaBlaCar or your city's ride-share scheme.",
+  },
+  rec_trans_trains: {
+    what: "Replace short flights with train or bus travel where possible.",
+    why: "A short-haul flight produces roughly 10 times more CO₂ per kilometre than a train journey on the same route.",
+    how: "For trips under 4 hours, check train timetables first. Trains are often cheaper, more comfortable, and drop you in the city centre.",
+  },
+  rec_energy_solar: {
+    what: "Switch to a 100% renewable energy tariff with your electricity provider.",
+    why: "Standard grid electricity is mostly generated from coal and gas. Green tariffs ensure your electricity comes from wind, solar, or hydro sources.",
+    how: "Contact your energy provider and ask about green tariffs — many are the same price or cheaper. If you own your home, consider installing solar panels.",
+  },
+  rec_energy_heatpump: {
+    what: "Replace your gas or oil boiler with an electric heat pump.",
+    why: "Gas and oil boilers burn fossil fuels directly in your home. Heat pumps use electricity to move heat and are 3-4 times more efficient.",
+    how: "Look into government schemes such as the Boiler Upgrade Scheme (UK) or similar grants in your country that reduce the upfront cost significantly.",
+  },
+  rec_shop_thrift: {
+    what: "Buy second-hand clothing and furniture before buying new.",
+    why: "Manufacturing new clothes and goods produces large amounts of carbon and waste. Second-hand items have already paid that carbon cost.",
+    how: "Try apps like Vinted, Depop, or eBay for clothes. Visit charity shops or car boot sales for furniture and homewares.",
+  },
+  rec_shop_electronics: {
+    what: "Keep your phone and laptop for at least 4 years before replacing.",
+    why: "Around 80% of a smartphone's lifetime carbon emissions come from manufacturing — not from using it. Keeping devices longer dramatically cuts that impact.",
+    how: "Replace batteries instead of whole devices. Buy refurbished if you need an upgrade. Avoid upgrading just for new features you don't really need.",
+  },
+};
 
 export default function Quiz() {
   const [activeTooltip, setActiveTooltip] = useState(null);
@@ -307,26 +355,45 @@ export default function Quiz() {
           {result.recommendations?.length > 0 && (
             <div style={styles.recsSection}>
               <h2 style={styles.sectionTitle}>Top Recommendations</h2>
-              {result.recommendations.map((rec) => (
-                <div key={rec.id} style={styles.recCard}>
-                  <div style={styles.recTop}>
-                    <span style={styles.recTitle}>{rec.title}</span>
-                    <span
-                      style={{
-                        ...styles.recImpact,
-                        background: impactColor[rec.impact] + "22",
-                        color: impactColor[rec.impact],
-                      }}
-                    >
-                      {rec.impact} Impact
+              {result.recommendations.map((rec) => {
+                const friendly = friendlyRecommendations[rec.id];
+                return (
+                  <div key={rec.id} style={styles.recCard}>
+                    <div style={styles.recTop}>
+                      <span style={styles.recTitle}>
+                        {friendly ? friendly.what : rec.title}
+                      </span>
+                      <span
+                        style={{
+                          ...styles.recImpact,
+                          background: impactColor[rec.impact] + "22",
+                          color: impactColor[rec.impact],
+                        }}
+                      >
+                        {rec.impact} Impact
+                      </span>
+                    </div>
+                    {friendly && (
+                      <>
+                        <p style={styles.recWhy}>
+                          <strong style={{ color: "#e2e8f0" }}>Why it matters: </strong>
+                          {friendly.why}
+                        </p>
+                        <p style={styles.recHow}>
+                          <strong style={{ color: "#e2e8f0" }}>How to do it: </strong>
+                          {friendly.how}
+                        </p>
+                      </>
+                    )}
+                    {!friendly && (
+                      <p style={styles.recDesc}>{rec.description}</p>
+                    )}
+                    <span style={styles.recReduction}>
+                      💚 Could save ~{rec.estimatedReduction}t CO₂/year
                     </span>
                   </div>
-                  <p style={styles.recDesc}>{rec.description}</p>
-                  <span style={styles.recReduction}>
-                    Save ~{rec.estimatedReduction}t CO₂/year
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -407,7 +474,7 @@ export default function Quiz() {
                 >
                   <option value="" disabled style={{ color: "#888" }}>Select an option</option>
                   {q.options.map((opt) => (
-                    <option key={opt.value} value={opt.value} style={{ color: "#fff" }}>
+                    <option key={opt.value} value={opt.value} style={{ color: "#fff", background: "#1e3a2f" }}>
                       {opt.label}
                     </option>
                   ))}
@@ -577,14 +644,14 @@ const styles = {
     position: "absolute",
     left: "24px",
     top: "-4px",
-    width: "220px",
+    width: "240px",
     background: "#0f2027",
     border: "1px solid rgba(255,255,255,0.15)",
     borderRadius: "10px",
     padding: "10px 12px",
     fontSize: "0.78rem",
     color: "#cbd5e1",
-    lineHeight: 1.5,
+    lineHeight: 1.6,
     zIndex: 10,
     boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
   },
@@ -649,7 +716,7 @@ const styles = {
     borderRadius: "20px",
     padding: "2rem",
     width: "100%",
-    maxWidth: "620px",
+    maxWidth: "640px",
     color: "#fff",
   },
   resultHeader: { textAlign: "center", marginBottom: "1.5rem" },
@@ -711,26 +778,39 @@ const styles = {
     background: "rgba(255,255,255,0.05)",
     border: "1px solid rgba(255,255,255,0.1)",
     borderRadius: "12px",
-    padding: "1rem",
-    marginBottom: "0.75rem",
+    padding: "1.1rem",
+    marginBottom: "0.85rem",
   },
   recTop: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "0.4rem",
+    alignItems: "flex-start",
+    marginBottom: "0.6rem",
     flexWrap: "wrap",
     gap: "0.5rem",
   },
-  recTitle: { fontWeight: 600, fontSize: "0.95rem" },
+  recTitle: { fontWeight: 700, fontSize: "0.95rem", flex: 1 },
   recImpact: {
     fontSize: "0.75rem",
     fontWeight: 600,
     padding: "2px 10px",
     borderRadius: "99px",
+    whiteSpace: "nowrap",
+  },
+  recWhy: {
+    fontSize: "0.84rem",
+    color: "#94a3b8",
+    margin: "0 0 0.4rem 0",
+    lineHeight: 1.55,
+  },
+  recHow: {
+    fontSize: "0.84rem",
+    color: "#94a3b8",
+    margin: "0 0 0.5rem 0",
+    lineHeight: 1.55,
   },
   recDesc: { fontSize: "0.85rem", color: "#94a3b8", margin: "0 0 0.4rem 0" },
-  recReduction: { fontSize: "0.8rem", color: "#22c55e", fontWeight: 600 },
+  recReduction: { fontSize: "0.82rem", color: "#22c55e", fontWeight: 600 },
   resetBtn: {
     width: "100%",
     padding: "12px",

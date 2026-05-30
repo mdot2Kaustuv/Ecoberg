@@ -1,8 +1,7 @@
-from account.models import Account , UserManager
+from account.models import Account, UserManager
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,22 +17,19 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
-    
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-
-        # Add custom claims
         token['email'] = user.email
         token['username'] = user.username
-        token['is_admin'] = user.is_admin
+        token['is_admin'] = user.is_admin if hasattr(user, 'is_admin') else False
         token['is_superuser'] = user.is_superuser
-        # ...
-
         return token
-    
+
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
@@ -52,6 +48,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        validated_data.pop('password2')
         user = Account.objects.create_user(
             email=validated_data['email'],
             username=validated_data['username'],
@@ -60,4 +57,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-    
+
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "Passwords didn't match."})
+        return attrs

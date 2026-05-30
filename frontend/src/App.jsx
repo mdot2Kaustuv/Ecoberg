@@ -7,6 +7,8 @@ import Login from './components/Login';
 import Quiz from './components/Quiz';
 import Home from './components/Home';
 import { Route, Routes } from 'react-router-dom';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 const App = () => {
   return (
@@ -19,6 +21,8 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/quiz" element={<Quiz />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:uid/:token/" element={<ResetPassword />} />
           </Routes>
         </main>
         <Footer/>

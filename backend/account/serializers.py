@@ -71,3 +71,17 @@ class ResetPasswordSerializer(serializers.Serializer):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Passwords didn't match."})
         return attrs
+
+
+# NEW — added for change password feature
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    new_password2 = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['new_password2']:
+            raise serializers.ValidationError({"new_password": "New passwords didn't match."})
+        if attrs['current_password'] == attrs['new_password']:
+            raise serializers.ValidationError({"new_password": "New password must be different from current password."})
+        return attrs

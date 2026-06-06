@@ -49,7 +49,7 @@ const Header = () => {
                 <Leaf className="h-4.5 w-4.5 fill-white/10 text-white" />
               </div>
               <span className="font-extrabold text-lg tracking-tight text-emerald-600">
-                Eco<span className="text-emerald-900">Berg</span>
+                Eco<span className="text-emerald-600">Berg</span>
               </span>
             </Link>
 

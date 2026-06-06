@@ -135,4 +135,4 @@ def dashboard(request):
         return Response(content, status=status.HTTP_200_OK)
 
     else:
-        return Response({'message': 'Method not allowed'}, status=status.HTTP_405_BAD_REQUEST)
+        return Response({'message': 'Method not allowed'}, status=status.HTTP_405_BAD_REQUEST) 

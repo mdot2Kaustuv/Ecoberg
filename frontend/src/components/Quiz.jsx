@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import 
+
 const steps = [
   {
     id: "food",
@@ -226,92 +226,108 @@ export default function Quiz() {
     setError(null);
   };
 
+  const getScoreColorClasses = (score) => {
+    if (score >= 75) return "border-emerald-500 text-emerald-700";
+    if (score >= 50) return "border-teal-500 text-teal-700";
+    if (score >= 30) return "border-amber-500 text-amber-700";
+    return "border-red-500 text-red-700";
+  };
+
   const getScoreLabel = (score) => {
-    if (score >= 75) return { label: "Excellent", className: styles.scoreExcellent };
-    if (score >= 50) return { label: "Good", className: styles.scoreGood };
-    if (score >= 30) return { label: "Average", className: styles.scoreAverage };
-    return { label: "Needs Work", className: styles.scoreBad };
+    if (score >= 75) return "Excellent";
+    if (score >= 50) return "Good";
+    if (score >= 30) return "Average";
+    return "Needs Work";
+  };
+
+  const getBarColorClass = (key) => {
+    const maps = {
+      food: "bg-teal-400",
+      transport: "bg-blue-400",
+      energy: "bg-amber-400",
+      shopping: "bg-pink-400",
+    };
+    return maps[key] || "bg-gray-400";
+  };
+
+  const getImpactColorClass = (impact) => {
+    if (impact === "High") return "bg-red-100 text-red-800";
+    if (impact === "Medium") return "bg-orange-100 text-orange-800";
+    return "bg-teal-100 text-teal-800";
   };
 
   if (result) {
-    const scoreInfo = getScoreLabel(result.sustainability_score);
-    const maxFootprint = 6; 
+    const scoreLabel = getScoreLabel(result.sustainability_score);
+    const scoreColorClass = getScoreColorClasses(result.sustainability_score);
+    const maxFootprint = 6;
 
     return (
-      <div className={styles.quizContainer}>
-        <div className={styles.resultCard}>
-          <div className={styles.resultHeader}>
-            <h1 className={styles.resultTitle}>Your Carbon Footprint</h1>
-            <p className={styles.resultSubtitle}>Here's how your lifestyle measures up</p>
+      <div className="w-full max-w-2xl mx-auto my-12 px-4 text-gray-800 font-sans">
+        <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-md">
+          <div className="mb-6 text-center">
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-1">Your Carbon Footprint</h1>
+            <p className="text-gray-500 text-sm">Here's how your lifestyle measures up</p>
           </div>
 
-          <div className={styles.scoreSection}>
-            <div className={`${styles.scoreCircle} ${scoreInfo.className}`}>
-              <span className={styles.scoreNumber}>{result.sustainability_score}</span>
-              <span className={styles.scoreMax}>/100</span>
-              <span className={styles.scoreLabelText}>{scoreInfo.label}</span>
+          <div className="flex flex-col items-center gap-4 mb-10 p-6 bg-gray-50 rounded-xl">
+            <div className={`w-36 h-36 rounded-full flex flex-col items-center justify-center bg-white border-8 ${scoreColorClass}`}>
+              <span className="text-4xl font-extrabold">{result.sustainability_score}</span>
+              <span className="text-xs text-gray-400 mt-1">/100</span>
+              <span className="text-xs font-bold uppercase mt-1 tracking-wider">{scoreLabel}</span>
             </div>
-            <div className={styles.totalFootprint}>
-              <span className={styles.footprintNumber}>{result.total_footprint}</span>
-              <span className={styles.footprintUnit}> tonnes CO₂/year</span>
+            <div className="text-center">
+              <span className="text-3xl font-black text-gray-800">{result.total_footprint}</span>
+              <span className="text-base text-gray-500"> tonnes CO₂/year</span>
             </div>
           </div>
 
-          <div className={styles.breakdownSection}>
-            <h2 className={styles.sectionTitle}>Breakdown</h2>
+          <div className="mb-10">
+            <h2 className="text-xl font-bold text-gray-900 mb-5">Breakdown</h2>
             {Object.entries(result.breakdown).map(([key, value]) => {
               const pct = Math.min((value / maxFootprint) * 100, 100);
-              const catClass = styles[`barFill_${key}`] || "";
-              
               return (
-                <div key={key} className={styles.barRow}>
-                  <span className={styles.barLabel}>
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                  </span>
-                  <div className={styles.barTrack}>
+                <div key={key} className="flex items-center gap-4 mb-4">
+                  <span className="w-24 text-sm font-medium text-gray-600 capitalize">{key}</span>
+                  <div className="flex-1 h-3.5 bg-gray-100 rounded-full overflow-hidden">
                     <div
-                      className={`${styles.barFill} ${catClass}`}
+                      className={`h-full rounded-full ${getBarColorClass(key)}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className={styles.barValue}>{value}t</span>
+                  <span className="w-12 text-right text-sm font-semibold text-gray-800">{value}t</span>
                 </div>
               );
             })}
           </div>
 
           {result.recommendations && result.recommendations.length > 0 && (
-            <div className={styles.recsSection}>
-              <h2 className={styles.sectionTitle}>Top Recommendations</h2>
+            <div className="mb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-5">Top Recommendations</h2>
               {result.recommendations.map((rec) => {
                 const friendly = friendlyRecommendations[rec.id];
-                const impactClass = styles[`impact${rec.impact}`];
-
                 return (
-                  <div key={rec.id} className={styles.recCard}>
-                    <div className={styles.recTop}>
-                      <span className={styles.recTitle}>
+                  <div key={rec.id} className="bg-gray-50 rounded-xl p-6 mb-4 border-l-4 border-gray-300">
+                    <div className="flex justify-between items-start gap-4 mb-3">
+                      <span className="font-semibold text-gray-900 text-base">
                         {friendly ? friendly.what : rec.title}
                       </span>
-                      <span className={`${styles.recImpact} ${impactClass}`}>
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide shrink-0 ${getImpactColorClass(rec.impact)}`}>
                         {rec.impact} Impact
                       </span>
                     </div>
                     {friendly ? (
                       <>
-                        <p className={styles.recWhy}>
-                          <strong className={styles.boldLabel}>Why it matters: </strong>
-                          {friendly.why}
+                        <p className="text-sm text-gray-600 mb-2 leading-relaxed">
+                          <strong className="text-gray-700">Why it matters: </strong>{friendly.why}
                         </p>
-                        <p className={styles.recHow}>
-                          <strong className={styles.boldLabel}>How to do it: </strong>
-                          {friendly.how}
+                        <p className="text-sm text-gray-600 mb-2 leading-relaxed">
+                          <strong className="text-gray-700">How to do it: </strong>{friendly.how}
                         </p>
                       </>
                     ) : (
-                      <p className={styles.recDesc}>{rec.description}</p>
+                      <p className="text-sm text-gray-600 mb-2 leading-relaxed">{rec.description}</p>
                     )}
-                    <span className={styles.recReduction}>
+                    <span className="inline-block mt-1 text-sm font-semibold text-emerald-700">
                       💚 Could save ~{rec.estimatedReduction}t CO₂/year
                     </span>
                   </div>
@@ -320,7 +336,10 @@ export default function Quiz() {
             </div>
           )}
 
-          <button onClick={handleReset} className={styles.submitBtn} style={{ width: "100%" }}>
+          <button
+            onClick={handleReset}
+            className="w-full mt-6 py-3.5 px-6 rounded-xl text-base font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow transition duration-150"
+          >
             Retake Quiz
           </button>
         </div>
@@ -329,96 +348,114 @@ export default function Quiz() {
   }
 
   return (
-    <div className={styles.quizContainer}>
-      <div className={styles.card}>
-        <div className={styles.header}>
-          <h1 className={styles.mainTitle}>Carbon Footprint Calculator</h1>
-          <p className={styles.subtitle}>
+    <div className="w-full max-w-2xl mx-auto my-12 px-4 text-gray-800 font-sans">
+      <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-md">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">Carbon Footprint Calculator</h1>
+          <p className="text-gray-500 text-sm">
             Step {currentStep + 1} of {totalSteps}
           </p>
         </div>
 
-        <div className={styles.progressTrack}>
+        {/* Progress bar line setup */}
+        <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden mb-8">
           <div
-            className={styles.progressFill}
+            className="h-full bg-emerald-600 transition-all duration-300 ease-out"
             style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
           />
         </div>
 
-        <div className={styles.stepTabs}>
+        {/* Step Tab Links row alignment */}
+        <div className="flex justify-between items-center gap-2 mb-10 border-b border-gray-100 pb-4">
           {steps.map((s, i) => {
-            let tabStatusClass = "";
-            if (i === currentStep) tabStatusClass = styles.stepTabActive;
-            else if (i < currentStep) tabStatusClass = styles.stepTabDone;
+            let activeStyle = "text-gray-400";
+            if (i === currentStep) activeStyle = "text-emerald-700 font-semibold bg-emerald-50";
+            else if (i < currentStep) activeStyle = "text-emerald-600 font-medium";
 
             return (
-              <div key={s.id} className={`${styles.stepTab} ${tabStatusClass}`}>
+              <div key={s.id} className={`flex items-center gap-2 text-sm px-3 py-2 rounded-lg transition ${activeStyle}`}>
                 <span>{s.icon}</span>
-                <span className={styles.stepTabLabel}>{s.title}</span>
+                <span className="hidden sm:inline">{s.title}</span>
               </div>
             );
           })}
         </div>
 
-        <div className={styles.questionsBlock}>
-          <h2 className={styles.stepTitle}>
-            {step.icon} {step.title}
-          </h2>
+        {/* Dynamic Interactive questions layout block */}
+        <div className="mb-10">
           {step.questions.map((q) => (
-            <div key={q.key} className={styles.questionRow}>
-              <div className={styles.labelRow}>
-                <label className={styles.questionLabel}>{q.label}</label>
+            <div key={q.key} className="mb-8 last:mb-0">
+              <div className="flex items-center gap-2 mb-3">
+                <label className="font-semibold text-base text-gray-800">{q.label}</label>
                 {q.tooltip && (
-                  <div className={styles.tooltipWrapper}>
+                  <div className="relative inline-flex group">
                     <span
-                      className={styles.infoIcon}
+                      className="cursor-pointer text-gray-400 text-xs bg-gray-100 w-5 h-5 inline-flex items-center justify-center rounded-full font-bold select-none hover:bg-gray-200"
                       onMouseEnter={() => setActiveTooltip(q.key)}
                       onMouseLeave={() => setActiveTooltip(null)}
                     >
                       ℹ
                     </span>
                     {activeTooltip === q.key && (
-                      <div className={styles.tooltipBox}>{q.tooltip}</div>
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-900 text-white p-3 rounded-lg text-xs leading-relaxed w-64 z-50 shadow-lg">
+                        {q.tooltip}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+                      </div>
                     )}
                   </div>
                 )}
               </div>
+
               {q.type === "select" ? (
-                <div className={styles.selectWrapper}>
+                <div className="relative">
                   <select
-                    className={`${styles.select} ${answers[q.key] ? "" : styles.selectPlaceholder}`}
+                    className={`w-full p-3.5 border border-gray-300 rounded-xl text-base bg-white focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition appearance-none ${
+                      answers[q.key] ? "text-gray-900" : "text-gray-400"
+                    }`}
                     value={answers[q.key] || ""}
                     onChange={(e) => handleChange(q.key, e.target.value)}
                   >
                     <option value="" disabled>Select an option</option>
                     {q.options?.map((opt) => (
-                      <option key={opt.value} value={opt.value} className={styles.optionItem}>
+                      <option key={opt.value} value={opt.value} className="text-gray-800">
                         {opt.label}
                       </option>
                     ))}
                   </select>
+                  <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                    ▼
+                  </div>
                 </div>
               ) : (
                 <input
                   type="number"
                   min="0"
-                  className={styles.input}
+                  className="w-full p-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition"
                   placeholder={q.placeholder}
                   value={answers[q.key] || ""}
-                  onChange={(e) => handleChange(q.key, e.target.value)}
+                  onChange={(e) => handleChange(q.key, Number(e.target.value))}
                 />
               )}
             </div>
           ))}
         </div>
 
-        {error && <p className={styles.error}>{error}</p>}
+        {error && (
+          <div className="p-4 mb-6 border border-red-200 bg-red-50 rounded-xl text-sm font-medium text-red-700">
+            {error}
+          </div>
+        )}
 
-        <div className={styles.navRow}>
+        {/* Footer actions row alignment */}
+        <div className="flex justify-between items-center gap-4 pt-6 border-t border-gray-100">
           <button
             onClick={handleBack}
             disabled={currentStep === 0}
-            className={`${styles.navBtn} ${styles.backBtn} ${currentStep === 0 ? styles.disabledBtn : ""}`}
+            className={`py-3 px-6 rounded-xl text-base font-semibold transition ${
+              currentStep === 0
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed opacity-50"
+                : "bg-gray-100 hover:bg-gray-200 text-gray-600"
+            }`}
           >
             ← Back
           </button>
@@ -427,7 +464,11 @@ export default function Quiz() {
             <button
               onClick={handleNext}
               disabled={!isStepComplete()}
-              className={`${styles.navBtn} ${styles.nextBtn} ${!isStepComplete() ? styles.disabledBtn : ""}`}
+              className={`py-3 px-6 rounded-xl text-base font-semibold text-white transition ${
+                !isStepComplete()
+                  ? "bg-emerald-600/50 cursor-not-allowed opacity-50"
+                  : "bg-emerald-600 hover:bg-emerald-700 shadow"
+              }`}
             >
               Next →
             </button>
@@ -435,7 +476,11 @@ export default function Quiz() {
             <button
               onClick={handleSubmit}
               disabled={!isStepComplete() || loading}
-              className={`${styles.navBtn} ${styles.submitBtn} ${(!isStepComplete() || loading) ? styles.disabledBtn : ""}`}
+              className={`py-3 px-6 rounded-xl text-base font-semibold text-white transition ${
+                !isStepComplete() || loading
+                  ? "bg-emerald-600/50 cursor-not-allowed opacity-50"
+                  : "bg-emerald-600 hover:bg-emerald-700 shadow"
+              }`}
             >
               {loading ? "Calculating..." : "Calculate 🌍"}
             </button>

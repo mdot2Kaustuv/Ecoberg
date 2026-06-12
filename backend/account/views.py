@@ -79,12 +79,12 @@ If you did not request a password reset, please ignore this email.
 
 The EcoBerg Team 🌍
 ''',
-                from_email=settings.DEFAULT_FROM_EMAIL,
+                from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[user.email],
                 fail_silently=False,
             )
         except Account.DoesNotExist:
-            pass  # Don't reveal if email exists or not
+            pass  
 
         return Response(
             {'message': 'If an account with that email exists, a password reset link has been sent.'},

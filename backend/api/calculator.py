@@ -18,7 +18,6 @@ class CarbonCalculator:
 
         final_food = round(food_val * food_waste_mult, 2)
 
-#Transportation
         auto_val = 0.0
         commute_mode = answers.get('trans_commute', 'two_wheeler') 
         raw_distance = answers.get('trans_distance_weekly', 100)   

@@ -24,7 +24,6 @@ class RegisterView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save()
-        # Send welcome email
         send_mail(
             subject='Welcome to EcoBerg 🌿',
             message=f'''Hi {user.username},
@@ -46,7 +45,7 @@ The EcoBerg Team 🌍
 ''',
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.email],
-            fail_silently=False,
+            fail_silently=True,
         )
 
 

@@ -16,7 +16,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showPassword2, setShowPassword2] = useState(false)
 
-  // Password checklist
+  
   const passwordChecks = [
     { label: 'At least 8 characters', pass: formData.password.length >= 8 },
     { label: 'Contains a number', pass: /\d/.test(formData.password) },

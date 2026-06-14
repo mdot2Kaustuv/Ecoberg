@@ -2,3 +2,6 @@ Django
 django-cors-headers
 djangorestframework
 djangorestframework-simplejwt
+requests
+python-decouple
+

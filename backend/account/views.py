@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.conf import settings
 from account.models import Account, UserManager
 from account.serializers import UserSerializer, RegisterSerializer, MyTokenObtainPairSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
 from rest_framework.decorators import api_view, permission_classes
@@ -45,7 +45,7 @@ The EcoBerg Team 🌍
 ''',
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.email],
-            fail_silently=True,
+            fail_silently=False,
         )
 
 

@@ -5,6 +5,7 @@ import Register from './components/Register';
 import {AuthProvider} from './utils/AuthContext.jsx'
 import Login from './components/Login'; 
 import Quiz from './components/Quiz';
+import News from './components/News';
 import Home from './components/Home';
 import { Route, Routes } from 'react-router-dom';
 import ForgotPassword from './components/ForgotPassword';
@@ -27,6 +28,7 @@ const App = () => {
             <Route path="/reset-password/:uid/:token/" element={<ResetPassword />} />
             <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/carbonhistory" element={<CarbonHistory />} />
+            <Route path ="/News" element = {<News/>}/>
           </Routes>
         </main>
         <Footer/>

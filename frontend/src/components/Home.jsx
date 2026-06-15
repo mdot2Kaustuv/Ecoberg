@@ -180,14 +180,13 @@ export default function Home() {
           >
             <span className="text-emerald-600 font-semibold text-sm uppercase tracking-widest">Everything you need</span>
             <h2 className="text-4xl font-extrabold text-slate-900 mt-2">One platform, full picture</h2>
-            <p className="text-slate-500 mt-4 max-w-xl mx-auto">From your dinner plate to a factory's smokestack — EcoBerg tracks it all.</p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+                className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm transition-all duration-300"
                 style={{
                   opacity: featIn ? 1 : 0,
                   transform: featIn ? 'translateY(0)' : 'translateY(32px)',

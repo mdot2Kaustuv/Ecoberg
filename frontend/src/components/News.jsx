@@ -38,7 +38,7 @@ const News = () => {
   const featured = newsList[0];
   const regularArticles = newsList.slice(1);
 
-  // Helper function to format the 'published_at' timestamp nicely
+ 
   const formatDate = (dateString) => {
     if (!dateString) return 'Recent';
     try {
@@ -58,17 +58,16 @@ const News = () => {
       
       <div className="mb-12 text-center md:text-left">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium tracking-wide border border-brand-medium/30 bg-brand-medium/10 text-brand-dark uppercase font-display">
-          🌱 Platform Insights
+           News
         </span>
         <h1 className="mt-3 text-4xl md:text-5xl font-black font-display text-slate-900 tracking-tight">
-          EcoBerg <span className="text-brand-medium">Newsroom</span>
+         <span className="text-brand-medium">Newsroom</span>
         </h1>
       </div>
 
       {/* 1. Featured Article (Dynamic Image Background with EcoBerg Gradient Overlay) */}
       {featured && (
         <div className="relative overflow-hidden rounded-3xl bg-brand-dark text-white shadow-xl mb-12 min-h-[460px] flex flex-col justify-end group">
-          {/* Article Cover Image */}
           {featured.image ? (
             <img 
               src={featured.image} 
@@ -76,14 +75,14 @@ const News = () => {
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
-            /* Fallback clean background matching the original gradient design if no image exists */
+           
             <div className="absolute inset-0 bg-gradient-to-br from-[#023326] via-[#054e3b] to-[#0b6e54]" />
           )}
           
-          {/* High-contrast dark gradient overlay mimicking screen aesthetic */}
+         
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/70 to-transparent" />
           
-          {/* Content area */}
+         
           <div className="p-6 md:p-12 relative z-10 max-w-3xl">
             <span className="text-xs font-bold tracking-widest text-brand-bright uppercase font-display bg-white/10 backdrop-blur-md px-3 py-1 rounded-full">
               {featured.source || 'Featured'}
@@ -97,7 +96,7 @@ const News = () => {
             
             <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-4">
               <div className="flex items-center gap-3 text-xs text-slate-300 font-sans">
-                <span>By {featured.author || 'EcoBerg Staff'}</span>
+                <span>By {featured.author || 'Staff'}</span>
                 <span>•</span>
                 <span className="font-mono">{formatDate(featured.date)}</span>
               </div>

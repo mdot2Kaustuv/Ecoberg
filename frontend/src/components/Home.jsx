@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Leaf, BarChart2, Building2, Users, ArrowRight, TrendingDown, Globe } from 'lucide-react';
+import GlobalCarbonTracker from './GlobalCarbonTracker';
 
 const useInView = (threshold = 0.15) => {
   const ref = useRef(null);
@@ -234,6 +235,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── GLOBAL CARBON TRACKER ── */}
+      <GlobalCarbonTracker />
 
       {/* ── CTA ── */}
       <section className="py-24 bg-gradient-to-br from-emerald-950 to-teal-800 relative overflow-hidden">

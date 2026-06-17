@@ -79,14 +79,25 @@ def scraper(JsonResponse) :
             return pycountry.countries.lookup(country_name).alpha_3
         except LookupError:
                 mapping = {
-                    "United States": "USA",
-                    "United Kingdom": "GBR",
-                    "Russia": "RUS",
-                    "South Korea": "KOR",
-                    "Iran": "IRN",
-                    "Vietnam": "VNM",
-                    "Syria": "SYR",
-                    "Venezuela": "VEN"
+                "United States": "USA",
+                "United Kingdom": "GBR",
+                "Russia": "RUS",
+                "South Korea": "KOR",
+                "Iran": "IRN",
+                "Vietnam": "VNM",
+                "Syria": "SYR",
+                "Venezuela": "VEN",
+                "DR Congo": "COD",
+                "Congo": "COG",
+                "Cote d'Ivoire": "CIV",
+                "Czech Republic (Czechia)": "CZE",
+                "State of Palestine": "PSE",
+                "Taiwan": "TWN",
+                "Tanzania": "TZA",
+                "Laos": "LAO",
+                "Moldova": "MDA",
+                "Bolivia": "BOL",
+                "Brunei": "BRN",
                 }
                 return mapping.get(country_name, None)
         
@@ -95,11 +106,19 @@ def scraper(JsonResponse) :
 
     clean_records = []
     for _, row in df.iterrows():
+            total = (
+            int(row["total_emissions"])
+            if pd.notna(row["total_emissions"])
+            else 0
+            )
+            per_capita = (
+                float(row["per_capita"]) if pd.notna(row["per_capita"]) else 0.0
+            )
             clean_records.append({
                 "code": row['code'],
                 "country": row['country'],
-                "total": int(row['total_emissions']),
-                "per_capita": float(row['per_capita'])
+                "total": total,
+                "per_capita": per_capita,
             })
 
     return JsonResponse(clean_records, safe=False)

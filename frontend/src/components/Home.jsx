@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Leaf, BarChart2, Building2, Users, ArrowRight, TrendingDown, Globe } from 'lucide-react';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 const useInView = (threshold = 0.15) => {
   const ref = useRef(null);
@@ -13,6 +14,41 @@ const useInView = (threshold = 0.15) => {
     return () => observer.disconnect();
   }, []);
   return [ref, inView];
+};
+
+const emissionsData = [
+  {year : 1900 , emissions: 3.0},
+  { year: 1910, emissions: 3.0 },
+  { year: 1920, emissions: 3.5 },
+  { year: 1930, emissions: 4.0 },
+  { year: 1940, emissions: 4.8 },
+  { year: 1945, emissions: 4.2 },
+  { year: 1950, emissions: 6.0 },
+  { year: 1960, emissions: 9.4 },
+  { year: 1970, emissions: 14.9 },
+  { year: 1980, emissions: 18.1 },
+  { year: 1990, emissions: 21.3 },
+  { year: 2000, emissions: 23.9 },
+  { year: 2010, emissions: 31.5 },
+  { year: 2019, emissions: 36.1 },
+  { year: 2020, emissions: 34.2 }, 
+  { year: 2023, emissions: 37.4 }, 
+];
+
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-xl border border-emerald-800/30 bg-[#063725] p-3 shadow-lg backdrop-blur-sm">
+        <p className="text-xs font-semibold uppercase tracking-wider text-emerald-300/70">
+          Year: {payload[0].payload.year}
+        </p>
+        <p className="mt-1 text-base font-bold text-[#00e699]">
+          {payload[0].value} Gt CO₂
+        </p>
+      </div>
+    );
+  }
+  return null;
 };
 
 const Counter = ({ target, suffix = '' }) => {
@@ -79,6 +115,7 @@ export default function Home() {
   const [stepsRef, stepsIn] = useInView(0.1);
 
   return (
+
     <div className="bg-white overflow-x-hidden">
 
       {/* ── HERO ── */}
@@ -167,6 +204,189 @@ export default function Home() {
         </div>
       </section>
 
+  
+
+
+
+
+
+
+
+  <div className="w-full rounded-2xl bg-[#032d1e] p-6 shadow-xl border border-emerald-950/40">
+      
+      {/* Header Container matching your typography system */}
+      <div className="mb-6 flex flex-col gap-1">
+        <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+          Global CO₂ Emissions <span className="text-[#00e699]">Historical Context</span>
+        </h2>
+        <p className="text-xs text-emerald-100/60 sm:text-sm">
+          Understanding macro industrial footprint changes from 1900 to present.
+        </p>
+      </div>
+      
+      {/* Chart Canvas Area */}
+      <div className="h-[350px] w-full sm:h-[450px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={emissionsData}
+            margin={{ top: 15, right: 10, left: -20, bottom: 5 }}
+          >
+            {/* Subtle background lines adapted for deep backgrounds */}
+            <CartesianGrid 
+              vertical={false} 
+              className="stroke-emerald-900/30" 
+            />
+            
+            {/* X-Axis styled with light-toned brand text */}
+            <XAxis 
+              dataKey="year" 
+              tickLine={true} 
+              axisLine={{ stroke: 'currentColor', className: 'text-emerald-900/60' }}
+              className="text-xs font-medium fill-emerald-300/50"
+              ticks={[1900, 1920, 1940, 1960, 1980, 2000, 2024]}
+              dy={10}
+            />
+            
+            {/* Y-Axis */}
+            <YAxis 
+              domain={[0, 40]} 
+              tickLine={false} 
+              axisLine={false}
+              className="text-xs font-medium fill-emerald-300/50"
+              ticks={[0, 10, 20, 30, 40]}
+              dx={-5}
+            />
+            
+            {/* Tooltip config */}
+            <Tooltip 
+              content={<CustomTooltip />} 
+              cursor={{ className: 'stroke-emerald-800/40', strokeWidth: 1.5 }} 
+            />
+            
+            {/* The main bright neon emerald emission line matching your brand CTA fill */}
+            <Line
+              type="monotone"
+              dataKey="emissions"
+              stroke="#00e699"
+              strokeWidth={3}
+              dot={false}
+              activeDot={{ 
+                r: 6, 
+                strokeWidth: 2.5, 
+                className: 'stroke-[#032d1e] fill-emerald-300' 
+              }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       {/* ── FEATURES ── */}
       <section className="py-24 bg-slate-50" ref={featRef}>
         <div className="max-w-6xl mx-auto px-6">
@@ -253,6 +473,8 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+   
 
     </div>
   );

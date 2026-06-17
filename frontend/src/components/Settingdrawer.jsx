@@ -66,7 +66,7 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
         }`}
         style={{ borderLeft: '1px solid rgba(167,243,208,0.4)' }}
       >
-        {/* Header */}
+
         <div className="flex items-center justify-between px-8 py-6 border-b border-emerald-100">
           <div>
             <h2 className="text-xl font-bold text-emerald-900">Settings</h2>
@@ -80,7 +80,8 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Menu Items */}
+
+
         <div className="flex-1 px-5 py-5 space-y-2 overflow-y-auto">
           {menuItems.map((item) =>
             item.isLink ? (

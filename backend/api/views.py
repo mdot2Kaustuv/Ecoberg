@@ -2,20 +2,18 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-
 from .serializers import FootprintResultSerializer
 from .calculator import CarbonCalculator
 
-
 class Calculate_Footprint(APIView):
     permission_classes = [AllowAny]
-
     def post(self, request):
         serializer = FootprintResultSerializer(data=request.data)
 
         if serializer.is_valid():
             answers = serializer.validated_data['inputs']
-            results = CarbonCalculator.calculate(answers)
+            calculator = CarbonCalculator()
+            results = calculator.calculate(answers)
 
             record = serializer.save(
                 user=request.user if request.user.is_authenticated else None,
@@ -35,3 +33,7 @@ class Calculate_Footprint(APIView):
             return Response(response_payload, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+

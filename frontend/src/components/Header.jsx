@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Leaf, Menu, X, User, LogOut, ChevronDown, Settings, History } from 'lucide-react';
 import AuthContext from '../utils/AuthContext';
-import SettingsDrawer from './Settings';
+import SettingsDrawer from './Settingdrawer';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);

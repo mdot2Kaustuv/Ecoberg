@@ -121,12 +121,16 @@ def scraper(request):
         )
         code = row["code"] if pd.notna(row["code"]) else None
         country = row["country"] if pd.notna(row["country"]) else None
+        share = row["share"] if pd.notna(row["share"]) else None
+        one_year_change = row["one_year_change"] if pd.notna(row["one_year_change"]) else None
 
         clean_records.append({
             "code": code,
             "country": country,
             "total": total,
             "per_capita": per_capita,
+            "one_year_change": one_year_change,
+            "share": share
         })
 
     return JsonResponse(clean_records, safe=False)

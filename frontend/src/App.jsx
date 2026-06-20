@@ -12,6 +12,10 @@ import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import ChangePassword from './components/ChangePassword';
 import CarbonHistory from './components/CarbonHistory';
+import WorldMap from './components/WorldMap';
+
+
+
 
 const App = () => {
   return (
@@ -29,6 +33,7 @@ const App = () => {
             <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/carbonhistory" element={<CarbonHistory />} />
             <Route path ="/News" element = {<News/>}/>
+            <Route path="/worldmap" element={<WorldMap />} />
           </Routes>
         </main>
         <Footer/>

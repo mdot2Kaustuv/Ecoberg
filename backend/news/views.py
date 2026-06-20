@@ -3,6 +3,7 @@ from decouple import config
 from django.http import JsonResponse
 import pandas as pd
 import pycountry
+import io
 
 def NewsList(request):
     access_key = config('YOUR_ACCESS_KEY')
@@ -51,8 +52,7 @@ def NewsList(request):
     return JsonResponse({'news': news_list})
 
 
-def scraper(JsonResponse) :
-
+def scraper(request):
     url = "https://www.worldometers.info/greenhouse-gas-emissions/greenhouse-gas-emissions-by-country/"
 
     headers = {
@@ -60,25 +60,31 @@ def scraper(JsonResponse) :
     }
     response = requests.get(url, headers=headers)
 
-    tables = pd.read_html(response.text)
+    tables = pd.read_html(io.StringIO(response.text))
 
     print(f"Found {len(tables)} tables")
+
+    if not tables:
+        return JsonResponse({"error": "No tables found on page"}, status=502)
+
     df = tables[0]
 
     df.columns = ['index', 'country', 'total_emissions', 'one_year_change', 'per_capita', 'share']
 
+    df['total_emissions'] = pd.to_numeric(
+        df['total_emissions'].astype(str).str.replace(',', ''), errors='coerce'
+    )
+    df['per_capita'] = pd.to_numeric(
+        df['per_capita'].astype(str).str.replace(',', ''), errors='coerce'
+    )
 
-    df['total_emissions'] = pd.to_numeric(df['total_emissions'].astype(str).str.replace(',', ''), errors='coerce')
-    df['per_capita'] = pd.to_numeric(df['per_capita'].astype(str).str.replace(',', ''), errors='coerce')
-   
-   
-   
-    def get_country_code(country_name) :
+    def get_country_code(country_name):
+        if pd.isna(country_name):
+            return None
         try:
-                
             return pycountry.countries.lookup(country_name).alpha_3
         except LookupError:
-                mapping = {
+            mapping = {
                 "United States": "USA",
                 "United Kingdom": "GBR",
                 "Russia": "RUS",
@@ -98,27 +104,29 @@ def scraper(JsonResponse) :
                 "Moldova": "MDA",
                 "Bolivia": "BOL",
                 "Brunei": "BRN",
-                }
-                return mapping.get(country_name, None)
-        
-    df['code'] = df['country'].apply(get_country_code)
+            }
+            return mapping.get(country_name, None)
 
+    df['code'] = df['country'].apply(get_country_code)
 
     clean_records = []
     for _, row in df.iterrows():
-            total = (
+        total = (
             int(row["total_emissions"])
             if pd.notna(row["total_emissions"])
             else 0
-            )
-            per_capita = (
-                float(row["per_capita"]) if pd.notna(row["per_capita"]) else 0.0
-            )
-            clean_records.append({
-                "code": row['code'],
-                "country": row['country'],
-                "total": total,
-                "per_capita": per_capita,
-            })
+        )
+        per_capita = (
+            float(row["per_capita"]) if pd.notna(row["per_capita"]) else 0.0
+        )
+        code = row["code"] if pd.notna(row["code"]) else None
+        country = row["country"] if pd.notna(row["country"]) else None
+
+        clean_records.append({
+            "code": code,
+            "country": country,
+            "total": total,
+            "per_capita": per_capita,
+        })
 
     return JsonResponse(clean_records, safe=False)

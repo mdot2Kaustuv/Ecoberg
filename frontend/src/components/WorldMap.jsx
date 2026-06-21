@@ -245,11 +245,9 @@ const WorldMapContent = () => {
               <span className="font-bold text-emerald-400 border-r border-slate-700 pr-2 mr-2">{hoveredCountry.name}</span>
               {hoveredCountry.value}
             </div>
-          ) : (
-            <div className="text-xs text-slate-400 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 italic">
-              Hover over colored geographical surfaces for tracking indicators
-            </div>
-          )}
+          ) 
+          : (<span className="text-slate-400 italic text-xs">Hover over a country for details</span>)
+          }
         </div>
 
 

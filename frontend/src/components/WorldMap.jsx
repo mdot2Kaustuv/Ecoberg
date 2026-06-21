@@ -1,16 +1,11 @@
 import React, { useState, useMemo, Suspense, use } from 'react';
 import * as d3 from 'd3';
 
-const GEO_URL = "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json";
+const GEO_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson";
 const API_URL = "http://127.0.0.1:8000/news/scraper/";
 
-/**
- * Color scale with enhanced contrast distribution.
- * Uses an exponential power factor (0.35) to visually pull up low-and-mid-tier 
- * emitters so they don't look completely washed out next to global outliers.
- */
+//Color 
 const getClarityColor = (value, max) => {
-  // Baseline visible color for missing data rows or zero values
   if (value === undefined || value === null || value === 0) return "#e2e8f0"; 
   
   const ratio = Math.min(Math.max(value / max, 0), 1);
@@ -77,7 +72,7 @@ const buildFeatureIndex = (geoData) => {
   const byId = new Map();
   
   (geoData.features || []).forEach((feature) => {
-    const name = feature.properties?.name;
+    const name = feature.properties?.name || feature.properties?.NAME;
     if (name) byName.set(normalizeName(name), feature);
     
     if (feature.id && /^[A-Z]{3}$/i.test(feature.id)) {
@@ -85,6 +80,9 @@ const buildFeatureIndex = (geoData) => {
     }
     if (feature.properties?.iso_a3 && /^[A-Z]{3}$/i.test(feature.properties.iso_a3)) {
       byId.set(feature.properties.iso_a3.toUpperCase(), feature);
+    }
+    if (feature.properties?.ISO_A3 && /^[A-Z]{3}$/i.test(feature.properties.ISO_A3)) {
+      byId.set(feature.properties.ISO_A3.toUpperCase(), feature);
     }
   });
   return { byName, byId };
@@ -164,7 +162,7 @@ const InteractiveMap = ({ data, viewMode, hoveredCountry, setHoveredCountry }) =
   const maxValue = data.length > 0 ? Math.max(...data.map((d) => d[viewMode] || 0)) : 1;
 
   const pathGenerator = useMemo(() => {
-    // Kept securely on a single line expression to fix the [plugin:vite:oxc] PARSE_ERROR
+
     const projection = d3.geoNaturalEarth1().fitSize([850, 440], geoData);
     return d3.geoPath(projection);
   }, [geoData]);
@@ -180,7 +178,7 @@ const InteractiveMap = ({ data, viewMode, hoveredCountry, setHoveredCountry }) =
               const d = pathGenerator(feature);
               if (!d) return null;
 
-              const featName = feature.properties?.name || index;
+              const featName = feature.properties?.name || feature.properties?.NAME || index;
               const isHovered = hoveredCountry && hoveredCountry.id === featName;
 
               return (
@@ -193,7 +191,7 @@ const InteractiveMap = ({ data, viewMode, hoveredCountry, setHoveredCountry }) =
                   className="transition-all duration-75 ease-out"
                   style={{ cursor: row ? 'pointer' : 'default' }}
                   onMouseEnter={() => {
-                    const countryName = row ? row.country : (feature.properties?.name || "Unknown Territory");
+                    const countryName = row ? row.country : (feature.properties?.name || feature.properties?.NAME || "Unknown Territory");
                     const displayValue = row 
                       ? (viewMode === 'total' ? `${row.total.toLocaleString()} tons` : `${row.per_capita.toFixed(2)} per capita`)
                       : "Data Not Available";
@@ -212,7 +210,7 @@ const InteractiveMap = ({ data, viewMode, hoveredCountry, setHoveredCountry }) =
         </svg>
       </div>
 
-      {/* --- Visual Scale Track --- */}
+
       <div className="w-full max-w-xl flex flex-col gap-1.5 text-xs font-mono text-slate-500 mt-5 px-1">
         <div className="w-full h-3 rounded-full bg-gradient-to-r from-[#dcffd2] via-[#4ade80] to-[#0b401f] border border-slate-200 shadow-inner"></div>
         <div className="flex items-center justify-between font-medium text-[11px] px-0.5">
@@ -236,7 +234,7 @@ const WorldMapContent = () => {
         Greenhouse Gas Emissions Map Analyzer
       </h2>
 
-      {/* Map Housing Card Container */}
+   
       <div className="bg-white p-5 border border-slate-200 rounded-2xl shadow-sm mb-8">
         <div className="flex justify-between items-center mb-4 min-h-[40px]">
           <div className="flex items-center gap-2 text-slate-700 font-semibold text-sm">
@@ -255,7 +253,7 @@ const WorldMapContent = () => {
           )}
         </div>
 
-        {/* View Toggles */}
+
         <div className="flex gap-2 mb-5">
           <button
             onClick={() => setViewMode('total')}
@@ -289,7 +287,6 @@ const WorldMapContent = () => {
         </Suspense>
       </div>
 
-      {/* --- Data Matrix Registry Table --- */}
       <div className="overflow-x-auto border border-slate-200 rounded-xl shadow-xs">
         <table className="w-full text-left border-collapse text-sm">
           <thead>

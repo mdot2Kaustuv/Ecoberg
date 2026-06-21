@@ -4,6 +4,8 @@ from django.http import JsonResponse
 import pandas as pd
 import pycountry
 import io
+import re
+import unicodedata 
 
 def NewsList(request):
     access_key = config('YOUR_ACCESS_KEY')
@@ -52,13 +54,70 @@ def NewsList(request):
     return JsonResponse({'news': news_list})
 
 
+def clean_change_value(val):
+    """Normalize any unicode minus/dash variants to ASCII hyphen-minus."""
+    if pd.isna(val):
+        return None
+
+    s = str(val)
+    s = unicodedata.normalize('NFKC', s)
+    minus_variants = [
+        '\u2212',       # − MINUS SIGN
+        '\u2013',       # – EN DASH
+        '\u2014',       # — EM DASH
+        '\u2010',       # ‐ HYPHEN
+        '\u00ad',       # ­ SOFT HYPHEN
+        '\xad',         # same, latin-1
+        'â\x88\x92',   # UTF-8 bytes of − misread as latin-1
+    ]
+    for char in minus_variants:
+        s = s.replace(char, '-')
+
+
+    s = re.sub(r'[^\d.%\-]', '', s)
+
+    return s if s else None
+
+
+def get_country_code(country_name):
+    if pd.isna(country_name):
+        return None
+    try:
+        return pycountry.countries.lookup(country_name).alpha_3
+    except LookupError:
+        mapping = {
+            "United States": "USA",
+            "United Kingdom": "GBR",
+            "Russia": "RUS",
+            "South Korea": "KOR",
+            "Iran": "IRN",
+            "Vietnam": "VNM",
+            "Syria": "SYR",
+            "Venezuela": "VEN",
+            "DR Congo": "COD",
+            "Congo": "COG",
+            "Cote d'Ivoire": "CIV",
+            "Czech Republic (Czechia)": "CZE",
+            "State of Palestine": "PSE",
+            "Taiwan": "TWN",
+            "Tanzania": "TZA",
+            "Laos": "LAO",
+            "Moldova": "MDA",
+            "Bolivia": "BOL",
+            "Brunei": "BRN",
+        }
+        return mapping.get(country_name, None)
+
+
 def scraper(request):
     url = "https://www.worldometers.info/greenhouse-gas-emissions/greenhouse-gas-emissions-by-country/"
 
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
+
     response = requests.get(url, headers=headers)
+    response.encoding = 'utf-8'
 
     tables = pd.read_html(io.StringIO(response.text))
 
@@ -78,47 +137,13 @@ def scraper(request):
         df['per_capita'].astype(str).str.replace(',', ''), errors='coerce'
     )
 
-    def get_country_code(country_name):
-        if pd.isna(country_name):
-            return None
-        try:
-            return pycountry.countries.lookup(country_name).alpha_3
-        except LookupError:
-            mapping = {
-                "United States": "USA",
-                "United Kingdom": "GBR",
-                "Russia": "RUS",
-                "South Korea": "KOR",
-                "Iran": "IRN",
-                "Vietnam": "VNM",
-                "Syria": "SYR",
-                "Venezuela": "VEN",
-                "DR Congo": "COD",
-                "Congo": "COG",
-                "Cote d'Ivoire": "CIV",
-                "Czech Republic (Czechia)": "CZE",
-                "State of Palestine": "PSE",
-                "Taiwan": "TWN",
-                "Tanzania": "TZA",
-                "Laos": "LAO",
-                "Moldova": "MDA",
-                "Bolivia": "BOL",
-                "Brunei": "BRN",
-            }
-            return mapping.get(country_name, None)
-
     df['code'] = df['country'].apply(get_country_code)
+    df['one_year_change'] = df['one_year_change'].apply(clean_change_value)
 
     clean_records = []
     for _, row in df.iterrows():
-        total = (
-            int(row["total_emissions"])
-            if pd.notna(row["total_emissions"])
-            else 0
-        )
-        per_capita = (
-            float(row["per_capita"]) if pd.notna(row["per_capita"]) else 0.0
-        )
+        total = int(row["total_emissions"]) if pd.notna(row["total_emissions"]) else 0
+        per_capita = float(row["per_capita"]) if pd.notna(row["per_capita"]) else 0.0
         code = row["code"] if pd.notna(row["code"]) else None
         country = row["country"] if pd.notna(row["country"]) else None
         share = row["share"] if pd.notna(row["share"]) else None

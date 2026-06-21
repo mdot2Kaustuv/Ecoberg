@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 const GEO_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson";
 const API_URL = "http://127.0.0.1:8000/news/scraper/";
 
-//Color 
+
 const getClarityColor = (value, max) => {
   if (value === undefined || value === null || value === 0) return "#e2e8f0"; 
   
@@ -18,7 +18,6 @@ const getClarityColor = (value, max) => {
   return `rgb(${r}, ${g}, ${b})`;
 };
 
-// ---- Country Name Normalization & Aliases ----
 const normalizeName = (name) =>
   (name || '')
     .normalize('NFD')

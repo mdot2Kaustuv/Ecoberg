@@ -13,6 +13,7 @@ import ResetPassword from './components/ResetPassword';
 import ChangePassword from './components/ChangePassword';
 import CarbonHistory from './components/CarbonHistory';
 import WorldMap from './components/WorldMap';
+import Dashboard from './components/Dashboard';
 
 
 
@@ -34,6 +35,7 @@ const App = () => {
             <Route path="/carbonhistory" element={<CarbonHistory />} />
             <Route path ="/News" element = {<News/>}/>
             <Route path="/worldmap" element={<WorldMap />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </main>
         <Footer/>

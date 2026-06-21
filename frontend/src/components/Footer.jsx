@@ -10,6 +10,7 @@ const Footer = () => {
   
   
   
+  
   return (
     <footer className="bg-emerald-900 text-emerald-300 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">

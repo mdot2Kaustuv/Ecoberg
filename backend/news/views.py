@@ -163,11 +163,11 @@ def scraper(request):
     return JsonResponse(clean_records, safe=False)
 
 
-def local_scraper(requests) :
+def local_scraper(request) :
 
     url = "https://www.worldometers.info/greenhouse-gas-emissions/nepal-greenhouse-gas-emissions/"
 
-    header = {
+    headers = {
         "User-Agent": "Mozilla/5.0"
     }
 
@@ -185,8 +185,11 @@ def local_scraper(requests) :
 
     df = tables[0]
 
-    df.columns = ['year', 'ghg', 'co2', 'ch4', 'n02', 'per capita','change','global share']
+    df.columns = ['year', 'ghg', 'co2', 'ch4', 'n02', 'fgases','per capita','change','global share']
 
+    df['year'] = pd.to_numeric(
+        df['year'].astype(str).str.replace(',', ''), errors='coerce'    )
+    
     df['ghg'] = pd.to_numeric(
         df['ghg'].astype(str).str.replace(',', ''), errors='coerce'
     )
@@ -207,6 +210,9 @@ def local_scraper(requests) :
     )
     df['global share'] = pd.to_numeric(
         df['global share'].astype(str).str.replace(',', ''), errors='coerce'
+    )       
+    df['fgases'] = pd.to_numeric(
+        df['fgases'].astype(str).str.replace(',', ''), errors='coerce'
     )       
 
 

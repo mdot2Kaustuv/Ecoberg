@@ -14,6 +14,7 @@ import ChangePassword from './components/ChangePassword';
 import CarbonHistory from './components/CarbonHistory';
 import WorldMap from './components/WorldMap';
 import Dashboard from './components/Dashboard';
+import EmissionsTable from './components/Localghg';
 
 
 
@@ -36,6 +37,7 @@ const App = () => {
             <Route path ="/News" element = {<News/>}/>
             <Route path="/worldmap" element={<WorldMap />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/Localghg" element={<EmissionsTable />} />
           </Routes>
         </main>
         <Footer/>

@@ -4,6 +4,7 @@ from . import views
 
 
 urlpatterns = [
-   path('', views.NewsList, name='news-list'),
-   path('scraper/', views.scraper, name='news-scraper')
+   path('int/', views.NewsList, name='news-list'),
+   path('scraper/', views.scraper, name='news-scraper'),
+   path('localscraper/', views.local_scraper, name='news-local-scraper')
 ]

@@ -1,3 +1,5 @@
+from wsgiref import headers
+
 import requests
 from decouple import config
 from django.http import JsonResponse
@@ -157,5 +159,79 @@ def scraper(request):
             "one_year_change": one_year_change,
             "share": share
         })
+
+    return JsonResponse(clean_records, safe=False)
+
+
+def local_scraper(requests) :
+
+    url = "https://www.worldometers.info/greenhouse-gas-emissions/nepal-greenhouse-gas-emissions/"
+
+    header = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+   
+    response = requests.get(url, headers=headers)
+    response.encoding = 'utf-8'
+
+    tables = pd.read_html(io.StringIO(response.text))
+
+    print(f"Found {len(tables)} tables")
+
+    if not tables:
+        return JsonResponse({"error": "No tables found on page"}, status=502)
+    
+
+    df = tables[0]
+
+    df.columns = ['year', 'ghg', 'co2', 'ch4', 'n02', 'per capita','change','global share']
+
+    df['ghg'] = pd.to_numeric(
+        df['ghg'].astype(str).str.replace(',', ''), errors='coerce'
+    )
+    df['co2'] = pd.to_numeric(
+        df['co2'].astype(str).str.replace(',', ''), errors='coerce'
+    )
+    df['ch4'] = pd.to_numeric(
+        df['ch4'].astype(str).str.replace(',', ''), errors='coerce'
+    )
+    df['n02'] = pd.to_numeric(
+        df['n02'].astype(str).str.replace(',', ''), errors='coerce'
+    )
+    df['per capita'] = pd.to_numeric(
+        df['per capita'].astype(str).str.replace(',', ''), errors='coerce'
+    )
+    df['change'] = pd.to_numeric(
+        df['change'].astype(str).str.replace(',', ''), errors='coerce'
+    )
+    df['global share'] = pd.to_numeric(
+        df['global share'].astype(str).str.replace(',', ''), errors='coerce'
+    )       
+
+
+    clean_records = []
+
+    for _, row in df.iterrows():
+        year = int(row["year"]) if pd.notna(row["year"]) else None
+        ghg = float(row["ghg"]) if pd.notna(row["ghg"]) else 0.0
+        co2 = float(row["co2"]) if pd.notna(row["co2"]) else 0.0
+        ch4 = float(row["ch4"]) if pd.notna(row["ch4"]) else 0.0
+        n02 = float(row["n02"]) if pd.notna(row["n02"]) else 0.0
+        per_capita = float(row["per capita"]) if pd.notna(row["per capita"]) else 0.0
+        change = float(row["change"]) if pd.notna(row["change"]) else 0.0
+        global_share = float(row["global share"]) if pd.notna(row["global share"]) else 0.0
+
+        clean_records.append({
+            "year": year,
+            "ghg": ghg,
+            "co2": co2,
+            "ch4": ch4,
+            "n02": n02,
+            "per_capita": per_capita,
+            "change": change,
+            "global_share": global_share
+        })
+
 
     return JsonResponse(clean_records, safe=False)

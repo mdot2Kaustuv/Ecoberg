@@ -52,9 +52,6 @@ const EmissionsTable = () => {
           <h2 className="text-xl font-bold text-white tracking-wide">
             Emissions Breakdown
           </h2>
-          <span className="bg-[#00d084]/20 text-[#00d084] text-xs font-semibold px-3 py-1 rounded-full border border-[#00d084]/30">
-            Live Data
-          </span>
         </div>
 
         {/* Responsive Table Wrapper */}

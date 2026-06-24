@@ -61,24 +61,30 @@ def clean_change_value(val):
     if pd.isna(val):
         return None
 
-    s = str(val)
+    s = str(val).strip()
     s = unicodedata.normalize('NFKC', s)
     minus_variants = [
-        '\u2212',       # − MINUS SIGN
-        '\u2013',       # – EN DASH
-        '\u2014',       # — EM DASH
-        '\u2010',       # ‐ HYPHEN
-        '\u00ad',       # ­ SOFT HYPHEN
-        '\xad',         # same, latin-1
-        'â\x88\x92',   # UTF-8 bytes of − misread as latin-1
+        '\u2212',      
+        '\u2013',      
+        '\u2014',      
+        '\u2010',      
+        '\u00ad',       
+        '\xad',        
+        'â\x88\x92',   
     ]
     for char in minus_variants:
         s = s.replace(char, '-')
 
-
-    s = re.sub(r'[^\d.%\-]', '', s)
-
-    return s if s else None
+    # Remove % and extract numeric value with optional sign
+    s = s.replace('%', '').strip()
+    
+    # Match sign (if present) followed by digits and optional decimal
+    match = re.search(r'[+\-]?\s*[\d.]+', s)
+    if match:
+        result = match.group(0).replace(' ', '')
+        return result
+    
+    return None
 
 
 def get_country_code(country_name):
@@ -205,12 +211,12 @@ def local_scraper(request) :
     df['per capita'] = pd.to_numeric(
         df['per capita'].astype(str).str.replace(',', ''), errors='coerce'
     )
-    df['change'] = pd.to_numeric(
-        df['change'].astype(str).str.replace(',', ''), errors='coerce'
-    )
-    df['global share'] = pd.to_numeric(
-        df['global share'].astype(str).str.replace(',', ''), errors='coerce'
-    )       
+    df['change'] = df['change'].apply(clean_change_value)
+    df['change'] = pd.to_numeric(df['change'], errors='coerce')
+    
+    df['global share'] = df['global share'].apply(clean_change_value)
+    df['global share'] = pd.to_numeric(df['global share'], errors='coerce')
+    
     df['fgases'] = pd.to_numeric(
         df['fgases'].astype(str).str.replace(',', ''), errors='coerce'
     )       

@@ -37,7 +37,7 @@ const App = () => {
             <Route path ="/News" element = {<News/>}/>
             <Route path="/worldmap" element={<WorldMap />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/Localghg" element={<EmissionsTable />} />
+            <Route path="/emissions" element={<EmissionsTable />} />
           </Routes>
         </main>
         <Footer/>

@@ -294,14 +294,13 @@ const EmissionsDashboard = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 font-sans space-y-6">
 
-      {/* ── Hero Header ── */}
       <div className="bg-[#054335] rounded-2xl px-8 py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-xl">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-            🌿 Nepal GHG Emissions Dashboard
+           Nepal  Emissions 
           </h1>
           <p className="text-[#00d084] text-sm mt-1 opacity-90">
-            Full breakdown by gas type, year, and per capita · Source: Worldometers
+            CO₂eq tons of GHG emissions by gas, per capita, and global share
           </p>
         </div>
         <div className="text-right">

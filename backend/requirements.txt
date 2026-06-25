@@ -8,4 +8,5 @@ lxml
 pycountry 
 sqlparse
 pandas 
+playwright
 

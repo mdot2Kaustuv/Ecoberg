@@ -2,10 +2,12 @@ import requests
 import json
 from django.http import JsonResponse
 from decouple import config
+from django.views.decorators.csrf import csrf_exempt
 
 
 
 
+@csrf_exempt 
 def get_chatbot_response(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -24,7 +26,7 @@ def get_chatbot_response(request):
                     "content": user_message
                 }
             ],
-            "model": "grok-4-1-fast",
+            "model": "llama-3.3-70b-versatile",
             "stream": False,
             "temperature": 1
         })
@@ -34,7 +36,10 @@ def get_chatbot_response(request):
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)
+        print("Status: ",response.status_code)
+        print("Body:", response.text)  
 
+                
         if response.status_code == 200:
             response_data = response.json()
             chatbot_reply = response_data['choices'][0]['message']['content']

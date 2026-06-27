@@ -10,7 +10,6 @@ import {
   ReferenceLine,
 } from 'recharts';
 
-// ── Palette ───────────────────────────────────────────────────────────────────
 const C = {
   ch4:    '#f97316',
   n2o:    '#2dd4bf',
@@ -21,7 +20,6 @@ const C = {
 };
 const PIE_COLORS = [C.ch4, C.n2o, C.co2];
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 const fmtM = (v) => {
   if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
   if (v >= 1_000)     return `${(v / 1_000).toFixed(0)}K`;
@@ -43,7 +41,7 @@ const Card = ({ children, className = '' }) => (
   </div>
 );
 
-// ── Shared Tooltip ────────────────────────────────────────────────────────────
+
 const SharedTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
@@ -59,7 +57,6 @@ const SharedTooltip = ({ active, payload, label }) => {
   );
 };
 
-// ── Stat Card ─────────────────────────────────────────────────────────────────
 const StatCard = ({ label, value, sub, color }) => (
   <div className="bg-white rounded-2xl border border-gray-100 shadow-md p-5 flex flex-col gap-1">
     <p className="text-xs uppercase tracking-wider text-gray-400">{label}</p>
@@ -68,7 +65,7 @@ const StatCard = ({ label, value, sub, color }) => (
   </div>
 );
 
-// ── Stacked Area ──────────────────────────────────────────────────────────────
+
 const ChartArea = ({ chartData }) => (
   <ResponsiveContainer width="100%" height={300}>
     <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
@@ -95,7 +92,7 @@ const ChartArea = ({ chartData }) => (
   </ResponsiveContainer>
 );
 
-// ── Bar Chart ─────────────────────────────────────────────────────────────────
+{/*baRCHART */}
 const ChartBar = ({ rawData }) => {
   const data = [...rawData].sort((a, b) => a.year - b.year).map(d => ({
     year: d.year, 'Total GHG': d.ghg ?? 0,

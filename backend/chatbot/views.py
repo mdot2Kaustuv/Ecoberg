@@ -24,9 +24,9 @@ def get_chatbot_response(request):
                     "content": user_message
                 }
             ],
-            "model": "grok-3-latest",
+            "model": "grok-4-1-fast",
             "stream": False,
-            "temperature": 0
+            "temperature": 1
         })
         headers = {
             'Authorization': f'Bearer {config("GROK_API_KEY")}',

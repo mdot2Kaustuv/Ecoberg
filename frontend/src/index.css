@@ -13,5 +13,29 @@ body {
   color: #0f172a; 
 }
 
+.chatbot-floating-btn {
+  /* The layout logic */
+  position: fixed;
+  bottom: 24px;      /* Distance from the bottom of the screen */
+  right: 24px;       /* Distance from the right of the screen */
+  z-index: 9999;     /* Ensures it stays on top of other elements */
 
+  /* The visual styling (customize to match your site) */
+  width: 60px;
+  height: 60px;
+  background-color: #064e3b; 
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* Optional: Add a hover effect for better user experience */
+.chatbot-floating-btn:hover {
+  transform: scale(1.05);
+  background-color: #047857;
+}
 

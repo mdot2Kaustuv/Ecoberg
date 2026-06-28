@@ -204,6 +204,15 @@ export default function EcobergChat() {
           </button>
         </div>
       </div>
+      <button 
+  class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-800 text-2xl text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/50"
+  aria-label="Open Chat"
+>
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+    <path d="M17 8C8 10 5.9 16.17 3.82 19.82A2 2 0 003 21c0 0 3-1 6-3s8-5 8-10z" />
+    <path d="M3 21s1-5 5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
 
       <style>{`
         @keyframes bounce {

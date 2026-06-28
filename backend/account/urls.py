@@ -9,4 +9,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('forgot-password/', views.ForgotPasswordView.as_view(), name='forgot_password'),
     path('reset-password/<str:uid>/<str:token>/', views.ResetPasswordView.as_view(), name='reset_password'),
+    path('contact/', views.ContactMessageView.as_view(), name='contact'),       # ✅ new
+    path('rate/', views.UserRatingView.as_view(), name='rate'),                 # ✅ new
 ]

@@ -1,9 +1,11 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Leaf, ArrowLeft, TrendingDown, TrendingUp, Minus } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import AuthContext from '../utils/AuthContext';
-import axios from 'axios';
+import { Leaf, ArrowLeft, TrendingDown, TrendingUp, Minus, BarChart2, LineChart as LineIcon, Activity } from 'lucide-react';
+import {
+  LineChart, Line, BarChart, Bar, AreaChart as RechartsAreaChart, Area,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+} from 'recharts';
+import useAxios from '../utils/Axios';
 
 const scoreColor = (score) => {
   if (score >= 70) return 'text-emerald-600';
@@ -39,18 +41,89 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+const CHART_TYPES = [
+  { id: 'bar', label: 'Bar', icon: <BarChart2 className="w-4 h-4" /> },
+  { id: 'line', label: 'Line', icon: <LineIcon className="w-4 h-4" /> },
+  { id: 'area', label: 'Area', icon: <Activity className="w-4 h-4" /> },
+];
+
+const COLORS = {
+  Total: '#059669',
+  Food: '#f59e0b',
+  Transport: '#3b82f6',
+  Energy: '#8b5cf6',
+  Shopping: '#ec4899',
+};
+
+const ChartRenderer = ({ type, data }) => {
+  const commonProps = {
+    data,
+    margin: { top: 4, right: 16, left: 0, bottom: 0 },
+  };
+
+  const axes = (
+    <>
+      <CartesianGrid strokeDasharray="3 3" stroke="#f0fdf4" />
+      <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#94a3b8' }} />
+      <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} />
+      <Tooltip content={<CustomTooltip />} />
+      <Legend wrapperStyle={{ fontSize: 12 }} />
+    </>
+  );
+
+  if (type === 'bar') {
+    return (
+      <BarChart {...commonProps}>
+        {axes}
+        <Bar dataKey="Total" fill={COLORS.Total} radius={[4, 4, 0, 0]} />
+        <Bar dataKey="Food" fill={COLORS.Food} radius={[4, 4, 0, 0]} />
+        <Bar dataKey="Transport" fill={COLORS.Transport} radius={[4, 4, 0, 0]} />
+        <Bar dataKey="Energy" fill={COLORS.Energy} radius={[4, 4, 0, 0]} />
+        <Bar dataKey="Shopping" fill={COLORS.Shopping} radius={[4, 4, 0, 0]} />
+      </BarChart>
+    );
+  }
+
+  if (type === 'line') {
+    return (
+      <LineChart {...commonProps}>
+        {axes}
+        <Line type="monotone" dataKey="Total" stroke={COLORS.Total} strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+        <Line type="monotone" dataKey="Food" stroke={COLORS.Food} strokeWidth={1.5} dot={false} />
+        <Line type="monotone" dataKey="Transport" stroke={COLORS.Transport} strokeWidth={1.5} dot={false} />
+        <Line type="monotone" dataKey="Energy" stroke={COLORS.Energy} strokeWidth={1.5} dot={false} />
+        <Line type="monotone" dataKey="Shopping" stroke={COLORS.Shopping} strokeWidth={1.5} dot={false} />
+      </LineChart>
+    );
+  }
+
+  if (type === 'area') {
+    return (
+      <RechartsAreaChart {...commonProps}>
+        {axes}
+        <Area type="monotone" dataKey="Total" stroke={COLORS.Total} fill={COLORS.Total} fillOpacity={0.15} strokeWidth={2.5} />
+        <Area type="monotone" dataKey="Food" stroke={COLORS.Food} fill={COLORS.Food} fillOpacity={0.1} strokeWidth={1.5} />
+        <Area type="monotone" dataKey="Transport" stroke={COLORS.Transport} fill={COLORS.Transport} fillOpacity={0.1} strokeWidth={1.5} />
+        <Area type="monotone" dataKey="Energy" stroke={COLORS.Energy} fill={COLORS.Energy} fillOpacity={0.1} strokeWidth={1.5} />
+        <Area type="monotone" dataKey="Shopping" stroke={COLORS.Shopping} fill={COLORS.Shopping} fillOpacity={0.1} strokeWidth={1.5} />
+      </RechartsAreaChart>
+    );
+  }
+
+  return null;
+};
+
 const CarbonHistory = () => {
-  const { authTokens } = useContext(AuthContext);
+  const axiosInstance = useAxios();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [chartType, setChartType] = useState('bar');
 
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/quiz/history/', {
-          headers: { Authorization: `Bearer ${authTokens?.access}` },
-        });
+        const res = await axiosInstance.get('/api/history/');
         setHistory(res.data);
       } catch {
         setError('Failed to load your history. Please try again.');
@@ -77,12 +150,10 @@ const CarbonHistory = () => {
 
       <div className="relative max-w-4xl mx-auto">
 
-        {/* Back link */}
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-emerald-600 transition-colors mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
 
-        {/* Page title */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-1">
             <div className="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center shadow-sm">
@@ -109,27 +180,34 @@ const CarbonHistory = () => {
           </div>
         ) : (
           <>
-            {/* Chart */}
             <div className="bg-white rounded-2xl border border-emerald-100 shadow-md p-6 mb-8">
-              <h2 className="text-base font-bold text-slate-800 mb-1">Footprint Over Time</h2>
+              {/* Chart header with toggle */}
+              <div className="flex items-center justify-between mb-1">
+                <h2 className="text-base font-bold text-slate-800">Footprint Over Time</h2>
+                {/* Chart type switcher */}
+                <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
+                  {CHART_TYPES.map((ct) => (
+                    <button
+                      key={ct.id}
+                      onClick={() => setChartType(ct.id)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        chartType === ct.id
+                          ? 'bg-white text-emerald-700 shadow-sm border border-emerald-100'
+                          : 'text-slate-500 hover:text-slate-700'
+                      }`}
+                    >
+                      {ct.icon}
+                      <span className="hidden sm:inline">{ct.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
               <p className="text-xs text-slate-400 mb-5">tonnes CO₂e per year</p>
               <ResponsiveContainer width="100%" height={260}>
-                <LineChart data={chartData} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0fdf4" />
-                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#94a3b8' }} />
-                  <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" dataKey="Total" stroke="#059669" strokeWidth={2.5} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                  <Line type="monotone" dataKey="Food" stroke="#f59e0b" strokeWidth={1.5} dot={false} />
-                  <Line type="monotone" dataKey="Transport" stroke="#3b82f6" strokeWidth={1.5} dot={false} />
-                  <Line type="monotone" dataKey="Energy" stroke="#8b5cf6" strokeWidth={1.5} dot={false} />
-                  <Line type="monotone" dataKey="Shopping" stroke="#ec4899" strokeWidth={1.5} dot={false} />
-                </LineChart>
+                <ChartRenderer type={chartType} data={chartData} />
               </ResponsiveContainer>
             </div>
 
-            {/* History list */}
             <div className="space-y-4">
               <h2 className="text-base font-bold text-slate-800">All Attempts</h2>
               {history.map((item, idx) => (
@@ -137,13 +215,11 @@ const CarbonHistory = () => {
                   key={item.id}
                   className="bg-white rounded-2xl border border-emerald-100 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center gap-4"
                 >
-                  {/* Date + attempt number */}
                   <div className="shrink-0 w-28">
                     <p className="text-xs text-slate-400">Attempt {history.length - idx}</p>
                     <p className="text-sm font-semibold text-slate-700">{item.date}</p>
                   </div>
 
-                  {/* Score badge */}
                   <div className={`shrink-0 flex flex-col items-center justify-center w-16 h-16 rounded-2xl border ${scoreBg(item.sustainability_score)}`}>
                     <span className={`text-xl font-extrabold ${scoreColor(item.sustainability_score)}`}>
                       {item.sustainability_score}
@@ -151,7 +227,6 @@ const CarbonHistory = () => {
                     <span className="text-xs text-slate-400">score</span>
                   </div>
 
-                  {/* Breakdown bars */}
                   <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
                     {[
                       { label: 'Food', value: item.breakdown.food, color: 'bg-amber-400' },
@@ -174,7 +249,6 @@ const CarbonHistory = () => {
                     ))}
                   </div>
 
-                  {/* Total + trend */}
                   <div className="shrink-0 text-right">
                     <div className="flex items-center gap-1 justify-end">
                       <TrendIcon
@@ -189,7 +263,6 @@ const CarbonHistory = () => {
               ))}
             </div>
 
-            {/* Retake quiz CTA */}
             <div className="mt-8 text-center">
               <Link
                 to="/quiz"

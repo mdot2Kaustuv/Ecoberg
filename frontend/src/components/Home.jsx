@@ -1,23 +1,31 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Leaf, BarChart2, Building2, Users, ArrowRight, TrendingDown, Globe } from 'lucide-react';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import {
+  Leaf, BarChart2, Building2, Users, ArrowRight, TrendingDown, Globe,
+  Car, Flame, Apple, ShoppingBag, ShieldCheck,
+} from 'lucide-react';
+import {
+  ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+} from 'recharts';
 
+/* ── hooks ── */
 const useInView = (threshold = 0.15) => {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) setInView(true);
-    }, { threshold });
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold }
+    );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
   return [ref, inView];
 };
 
+/* ── chart data ── */
 const emissionsData = [
-  {year : 1900 , emissions: 3.0},
+  { year: 1900, emissions: 3.0 },
   { year: 1910, emissions: 3.0 },
   { year: 1920, emissions: 3.5 },
   { year: 1930, emissions: 4.0 },
@@ -31,8 +39,8 @@ const emissionsData = [
   { year: 2000, emissions: 23.9 },
   { year: 2010, emissions: 31.5 },
   { year: 2019, emissions: 36.1 },
-  { year: 2020, emissions: 34.2 }, 
-  { year: 2023, emissions: 37.4 }, 
+  { year: 2020, emissions: 34.2 },
+  { year: 2023, emissions: 37.4 },
 ];
 
 const CustomTooltip = ({ active, payload }) => {
@@ -51,6 +59,7 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
+/* ── animated counter ── */
 const Counter = ({ target, suffix = '' }) => {
   const [count, setCount] = useState(0);
   const [ref, inView] = useInView();
@@ -68,6 +77,7 @@ const Counter = ({ target, suffix = '' }) => {
   return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
 };
 
+/* ── data ── */
 const features = [
   {
     icon: <Users className="w-6 h-6" />,
@@ -84,7 +94,7 @@ const features = [
   {
     icon: <BarChart2 className="w-6 h-6" />,
     title: 'Compare & Benchmark',
-    desc: 'Compare your footprint against city, national, and global averages. Stack companies side by side to see who is leading on sustainability.',
+    desc: 'Compare your footprint against city, national, and global averages. Stack companies side by side to see who leads on sustainability.',
     color: 'green',
   },
   {
@@ -93,12 +103,55 @@ const features = [
     desc: 'Get personalised tips ranked by impact. Small changes that add up — and a clear path to a greener lifestyle.',
     color: 'emerald',
   },
-  
   {
     icon: <Globe className="w-6 h-6" />,
     title: 'Live Environment News',
     desc: 'Stay informed with curated news on climate policy, green technology, and corporate sustainability commitments.',
     color: 'green',
+  },
+];
+
+const categories = [
+  {
+    title: 'Transport Impact',
+    desc: 'Air mileage index, daily gasoline/hybrid commuting cycles, and public high-speed transit factors.',
+    icon: <Car className="h-5 w-5 text-emerald-600" />,
+    border: 'hover:border-emerald-200',
+    bg: 'bg-emerald-50/50',
+  },
+  {
+    title: 'Home Energy',
+    desc: 'Dwelling footprints scaled against square metrics, electric grids, and thermal gas insulations.',
+    icon: <Flame className="h-5 w-5 text-amber-600" />,
+    border: 'hover:border-amber-200',
+    bg: 'bg-amber-50/40',
+  },
+  {
+    title: 'Food Habits',
+    desc: 'Meat-heavy vs vegan diet offsets, local organic cropping, and weekly organic waste variables.',
+    icon: <Apple className="h-5 w-5 text-sky-600" />,
+    border: 'hover:border-sky-200',
+    bg: 'bg-sky-50/40',
+  },
+  {
+    title: 'Shopping',
+    desc: 'Fast-fashion material purchases, active electronic upgrade loops, and recycle-bin sorting.',
+    icon: <ShoppingBag className="h-5 w-5 text-purple-600" />,
+    border: 'hover:border-purple-200',
+    bg: 'bg-purple-50/40',
+  },
+];
+
+const methodologySteps = [
+  {
+    num: '1',
+    title: 'Baseline Aggregation',
+    desc: 'Inputs from your diet structures and dwelling sizes define core sector emission benchmarks annualised using EPA coefficient metrics.',
+  },
+  {
+    num: '2',
+    title: 'Variables Scaling & Multipliers',
+    desc: 'Answers like EV fuel types, flight counts, organic sorting, and solar offsets scale and multiply the initial sector indexes.',
   },
 ];
 
@@ -109,25 +162,25 @@ const steps = [
   { num: '04', title: 'Track & improve', desc: 'Retake the quiz over time and watch your score improve.' },
 ];
 
+
 export default function Home() {
   const [heroRef, heroIn] = useInView(0.1);
   const [featRef, featIn] = useInView(0.1);
   const [stepsRef, stepsIn] = useInView(0.1);
+  const [catRef, catIn] = useInView(0.1);
+  const [methodRef, methodIn] = useInView(0.1);
 
   return (
-
     <div className="bg-white overflow-x-hidden">
 
-      {/* ── HERO ── */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-800">
-        {/* decorative blobs */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-800">
+
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-emerald-500/20 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-teal-400/10 rounded-full blur-3xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-emerald-800/30 rounded-full blur-3xl" />
         </div>
-
-        {/* grid texture */}
+     
         <div
           className="absolute inset-0 opacity-10"
           style={{
@@ -136,44 +189,113 @@ export default function Home() {
           }}
         />
 
-        <div
-          ref={heroRef}
-          className="relative z-10 max-w-4xl mx-auto px-6 text-center"
-          style={{
-            opacity: heroIn ? 1 : 0,
-            transform: heroIn ? 'translateY(0)' : 'translateY(32px)',
-            transition: 'opacity 0.8s ease, transform 0.8s ease',
-          }}
-        >
-          <div className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-semibold px-4 py-1.5 rounded-full mb-6 tracking-widest uppercase">
-            <Leaf className="w-3.5 h-3.5" /> Planet-first platform
-          </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight mb-6">
-            Know your impact.<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300">
-              Change the world.
-            </span>
-          </h1>
-
-          <p className="text-lg sm:text-xl text-emerald-100/80 max-w-2xl mx-auto mb-10 leading-relaxed">
-            EcoBerg helps individuals measure their carbon footprint and empowers companies to reduce emissions, cut costs, and pay less tax — all in one place.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/quiz"
-              className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-bold rounded-full text-base transition-all shadow-lg shadow-emerald-900/40 hover:shadow-emerald-400/30 hover:scale-105 active:scale-95"
+            <div
+              ref={heroRef}
+              className="lg:col-span-7 space-y-7 text-left"
+              style={{
+                opacity: heroIn ? 1 : 0,
+                transform: heroIn ? 'translateY(0)' : 'translateY(32px)',
+                transition: 'opacity 0.8s ease, transform 0.8s ease',
+              }}
             >
-              Calculate my footprint
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              to="/register"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-full text-base transition-all backdrop-blur-sm"
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold uppercase tracking-widest">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                </span>
+                Updated for 2024 Emissions Data
+              </div>
+
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight">
+                Know your impact.<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300">
+                  Change the world.
+                </span>
+              </h1>
+
+              <p className="text-lg sm:text-xl text-emerald-100/80 max-w-xl leading-relaxed">
+                EcoBerg helps individuals measure their carbon footprint and empowers companies to reduce emissions, cut costs, and pay less tax — all in one place.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <Link
+                  to="/quiz"
+                  className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-bold rounded-full text-base transition-all shadow-lg shadow-emerald-900/40 hover:shadow-emerald-400/30 hover:scale-105 active:scale-95"
+                >
+                  Calculate my footprint
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  to="/register"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-full text-base transition-all backdrop-blur-sm"
+                >
+                  Create free account
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: live assessment preview card (from TSX) */}
+            <div
+              className="lg:col-span-5 flex justify-center lg:justify-end"
+              style={{
+                opacity: heroIn ? 1 : 0,
+                transform: heroIn ? 'translateY(0)' : 'translateY(24px)',
+                transition: 'opacity 0.9s ease 0.15s, transform 0.9s ease 0.15s',
+              }}
             >
-              Create free account
-            </Link>
+              <div className="w-full max-w-[400px] bg-white/5 backdrop-blur-md rounded-[32px] shadow-2xl shadow-emerald-950/40 p-8 border border-white/10 relative">
+                {/* floating score badge */}
+                <div className="absolute -top-5 -right-5 w-20 h-20 bg-emerald-400 rounded-full flex items-center justify-center border-4 border-emerald-950 shadow-lg">
+                  <div className="text-center">
+                    <span className="block text-[9px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Score</span>
+                    <span className="text-2xl font-black text-emerald-950 mt-0.5 block">82</span>
+                  </div>
+                </div>
+
+                <h3 className="text-sm font-bold text-emerald-100 tracking-tight mb-6">Live Assessment Preview</h3>
+
+                {/* doughnut */}
+                <div className="flex items-center justify-center py-4 relative">
+                  <svg viewBox="0 0 100 100" className="w-36 h-36 transform -rotate-90">
+                    <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.08)" strokeWidth="12" fill="transparent" />
+                    <circle cx="50" cy="50" r="40" stroke="#00e699" strokeWidth="12" fill="transparent"
+                      strokeDasharray="251.2" strokeDashoffset="62.8" strokeLinecap="round" />
+                    <circle cx="50" cy="50" r="40" stroke="#065f46" strokeWidth="12" fill="transparent"
+                      strokeDasharray="251.2" strokeDashoffset="188.4" strokeLinecap="round" />
+                  </svg>
+                  <div className="absolute flex flex-col items-center justify-center">
+                    <span className="text-3xl font-black text-white">4.2</span>
+                    <span className="text-[9px] uppercase font-bold text-emerald-300/60 tracking-wider">Tons CO₂/yr</span>
+                  </div>
+                </div>
+
+                {/* breakdown bars */}
+                <div className="space-y-4 pt-3">
+                  {[
+                    { label: 'Transportation', amount: '1.8t / yr', pct: '45%', color: 'bg-[#00e699]' },
+                    { label: 'Food & Diet', amount: '1.2t / yr', pct: '30%', color: 'bg-emerald-700' },
+                    { label: 'Home Energy', amount: '0.8t / yr', pct: '20%', color: 'bg-teal-500' },
+                  ].map((row) => (
+                    <div key={row.label} className="space-y-1.5">
+                      <div className="flex justify-between items-center text-xs font-semibold">
+                        <span className="flex items-center gap-1.5 text-emerald-200/70">
+                          <span className={`w-2 h-2 rounded-full ${row.color}`} />
+                          {row.label}
+                        </span>
+                        <span className="text-white font-bold">{row.amount}</span>
+                      </div>
+                      <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div className={`h-full ${row.color} rounded-full`} style={{ width: row.pct }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -185,8 +307,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── STATS ── */}
-      <section className="py-16 bg-white">
+      {/* ══ 2. STATS COUNTERS ══ */}
+      <section className="py-16 bg-white border-b border-slate-100">
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             { value: 14, suffix: '', label: 'Quiz questions' },
@@ -204,191 +326,163 @@ export default function Home() {
         </div>
       </section>
 
-  
+      {/* ══ 3. EMISSIONS CHART ══ */}
+      <section className="py-20 bg-[#F8FAF9]">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="w-full rounded-2xl bg-[#032d1e] p-6 shadow-xl border border-emerald-950/40">
+            <div className="mb-6 flex flex-col gap-1">
+              <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                Global CO₂ Emissions <span className="text-[#00e699]">Historical Context</span>
+              </h2>
+              <p className="text-xs text-emerald-100/60 sm:text-sm">
+                Understanding macro industrial footprint changes from 1900 to present.
+              </p>
+            </div>
+            <div className="h-[350px] w-full sm:h-[450px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={emissionsData} margin={{ top: 15, right: 10, left: -20, bottom: 5 }}>
+                  <CartesianGrid vertical={false} stroke="rgba(6,55,37,0.3)" />
+                  <XAxis
+                    dataKey="year"
+                    tickLine={true}
+                    axisLine={{ stroke: 'rgba(52,211,153,0.2)' }}
+                    tick={{ fill: 'rgba(110,231,183,0.5)', fontSize: 11 }}
+                    ticks={[1900, 1920, 1940, 1960, 1980, 2000, 2024]}
+                    dy={10}
+                  />
+                  <YAxis
+                    domain={[0, 40]}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: 'rgba(110,231,183,0.5)', fontSize: 11 }}
+                    ticks={[0, 10, 20, 30, 40]}
+                    dx={-5}
+                  />
+                  <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(6,55,37,0.4)', strokeWidth: 1.5 }} />
+                  <Line
+                    type="monotone"
+                    dataKey="emissions"
+                    stroke="#00e699"
+                    strokeWidth={3}
+                    dot={false}
+                    activeDot={{ r: 6, strokeWidth: 2.5, stroke: '#032d1e', fill: '#6ee7b7' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </section>
 
+      {/* ══ 4. SCIENCE / METHODOLOGY ══ (from TSX) */}
+      <section className="py-20 bg-white border-t border-b border-slate-100" ref={methodRef}>
+        <div className="max-w-6xl mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-
-
-
-
-
-  <div className="w-full rounded-2xl bg-[#032d1e] p-6 shadow-xl border border-emerald-950/40">
-      
-      {/* Header Container matching your typography system */}
-      <div className="mb-6 flex flex-col gap-1">
-        <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-          Global CO₂ Emissions <span className="text-[#00e699]">Historical Context</span>
-        </h2>
-        <p className="text-xs text-emerald-100/60 sm:text-sm">
-          Understanding macro industrial footprint changes from 1900 to present.
-        </p>
-      </div>
-      
-      {/* Chart Canvas Area */}
-      <div className="h-[350px] w-full sm:h-[450px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={emissionsData}
-            margin={{ top: 15, right: 10, left: -20, bottom: 5 }}
-          >
-            {/* Subtle background lines adapted for deep backgrounds */}
-            <CartesianGrid 
-              vertical={false} 
-              className="stroke-emerald-900/30" 
-            />
-            
-            {/* X-Axis styled with light-toned brand text */}
-            <XAxis 
-              dataKey="year" 
-              tickLine={true} 
-              axisLine={{ stroke: 'currentColor', className: 'text-emerald-900/60' }}
-              className="text-xs font-medium fill-emerald-300/50"
-              ticks={[1900, 1920, 1940, 1960, 1980, 2000, 2024]}
-              dy={10}
-            />
-            
-            {/* Y-Axis */}
-            <YAxis 
-              domain={[0, 40]} 
-              tickLine={false} 
-              axisLine={false}
-              className="text-xs font-medium fill-emerald-300/50"
-              ticks={[0, 10, 20, 30, 40]}
-              dx={-5}
-            />
-            
-            {/* Tooltip config */}
-            <Tooltip 
-              content={<CustomTooltip />} 
-              cursor={{ className: 'stroke-emerald-800/40', strokeWidth: 1.5 }} 
-            />
-            
-            {/* The main bright neon emerald emission line matching your brand CTA fill */}
-            <Line
-              type="monotone"
-              dataKey="emissions"
-              stroke="#00e699"
-              strokeWidth={3}
-              dot={false}
-              activeDot={{ 
-                r: 6, 
-                strokeWidth: 2.5, 
-                className: 'stroke-[#032d1e] fill-emerald-300' 
+            {/* Left: copy */}
+            <div
+              className="space-y-6"
+              style={{
+                opacity: methodIn ? 1 : 0,
+                transform: methodIn ? 'translateX(0)' : 'translateX(-24px)',
+                transition: 'opacity 0.7s ease, transform 0.7s ease',
               }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      {/* ── FEATURES ── */}
-      <section className="py-24 bg-slate-50" ref={featRef}>
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900 text-white rounded-md text-[10px] uppercase font-extrabold tracking-widest">
+                Scientific framework
+              </div>
+              <h2 className="text-3xl font-extrabold text-emerald-950 tracking-tight leading-tight">
+                Empowering daily choices for real environmental impact
+              </h2>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                A <strong>carbon footprint</strong> represents the gross volume of greenhouse gases discharged by human industries and household lifestyles. Measured in metric tons of CO₂e, it translates daily choices — from diet to utility — into planetary parameters.
+              </p>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                EcoBerg breaks down emissions, provides an exact sustainability score, and drafts personalised saving targets backed by intelligent recommendations.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <div className="flex items-center gap-2.5">
+                  <ShieldCheck className="h-5 w-5 text-emerald-600" />
+                  <span className="text-xs font-bold text-slate-700">EPA Validated Baselines</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <Globe className="h-5 w-5 text-emerald-600" />
+                  <span className="text-xs font-bold text-slate-700">Global Climate Models Aligned</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: steps panel */}
+            <div
+              className="bg-[#F8FAF9] rounded-[32px] border border-slate-100 p-8 sm:p-10 shadow-sm"
+              style={{
+                opacity: methodIn ? 1 : 0,
+                transform: methodIn ? 'translateX(0)' : 'translateX(24px)',
+                transition: 'opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s',
+              }}
+            >
+              <h3 className="text-sm font-bold text-emerald-950 uppercase mb-6 flex items-center gap-2 border-b border-emerald-100 pb-4 tracking-tight">
+                <span className="h-2 w-2 rounded-full bg-emerald-600" />
+                How carbon calculations work
+              </h3>
+              <div className="space-y-6">
+                {methodologySteps.map((s) => (
+                  <div key={s.num} className="flex items-start gap-4">
+                    <div className="mt-0.5 h-6 w-6 shrink-0 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">
+                      {s.num}
+                    </div>
+                    <div>
+                      <span className="font-bold text-sm text-slate-800 block">{s.title}</span>
+                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ══ 5. ASSESSMENT CATEGORIES ══ (from TSX) */}
+      <section className="py-20 bg-[#F8FAF9]" ref={catRef}>
+        <div className="max-w-6xl mx-auto px-6 lg:px-12">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="text-xs font-bold text-emerald-700 tracking-wider bg-emerald-100 py-1.5 px-3.5 rounded-full border border-emerald-200/50">
+              Interactive Assessment Categories
+            </span>
+            <h2 className="text-3xl font-extrabold text-emerald-950 tracking-tight mt-4">
+              Explore our core environmental vectors
+            </h2>
+            <p className="text-xs text-slate-400 mt-2 max-w-md mx-auto">
+              We analyse lifestyle emissions across crucial domestic verticals following strict IPCC index models.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((item, idx) => (
+              <div
+                key={idx}
+                className={`p-6 rounded-[28px] border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:shadow-md ${item.border} flex flex-col group`}
+                style={{
+                  opacity: catIn ? 1 : 0,
+                  transform: catIn ? 'translateY(0)' : 'translateY(24px)',
+                  transition: `opacity 0.6s ease ${idx * 0.08}s, transform 0.6s ease ${idx * 0.08}s`,
+                }}
+              >
+                <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center shadow-sm mb-4 border border-slate-100`}>
+                  {item.icon}
+                </div>
+                <h4 className="font-bold text-slate-800 text-sm tracking-tight">{item.title}</h4>
+                <p className="text-xs text-slate-400 mt-2 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ 6. FEATURES ══ */}
+      <section className="py-24 bg-white" ref={featRef}>
         <div className="max-w-6xl mx-auto px-6">
           <div
             className="text-center mb-16"
@@ -406,7 +500,7 @@ export default function Home() {
             {features.map((f, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm transition-all duration-300"
+                className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md"
                 style={{
                   opacity: featIn ? 1 : 0,
                   transform: featIn ? 'translateY(0)' : 'translateY(32px)',
@@ -424,8 +518,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section className="py-24 bg-white" ref={stepsRef}>
+      {/* ══ 7. HOW IT WORKS ══ */}
+      <section className="py-24 bg-slate-50" ref={stepsRef}>
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-16">
             <span className="text-emerald-600 font-semibold text-sm uppercase tracking-widest">Simple process</span>
@@ -455,15 +549,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="py-24 bg-gradient-to-br from-emerald-950 to-teal-800 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-400/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl" />
+      {/* ══ 8. CTA BANNER ══ */}
+      <section className="py-24 bg-emerald-950 relative overflow-hidden">
+        <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/4 pointer-events-none">
+          <Leaf className="h-64 w-64 text-emerald-900 opacity-20" />
         </div>
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl pointer-events-none" />
+
         <div className="relative z-10 max-w-2xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-extrabold text-white mb-4">Ready to see your footprint?</h2>
-          <p className="text-emerald-200/80 text-lg mb-8">Takes less than 2 minutes. No account required to start.</p>
+          <h2 className="text-4xl font-extrabold text-white mb-4 tracking-tight">
+            Ready to design your personal carbon blueprint?
+          </h2>
+          <p className="text-emerald-200/80 text-lg mb-8 leading-relaxed">
+            Takes less than 2 minutes. No account required to start.
+          </p>
           <Link
             to="/quiz"
             className="group inline-flex items-center gap-2 px-10 py-4 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-bold rounded-full text-base transition-all shadow-lg hover:scale-105 active:scale-95"
@@ -473,8 +572,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
-   
 
     </div>
   );

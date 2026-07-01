@@ -2,15 +2,16 @@ from django.conf import settings
 from account.models import Account, UserManager
 from account.serializers import UserSerializer, RegisterSerializer, MyTokenObtainPairSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView  # ✅ added
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.core.mail import send_mail
-from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from .models import ContactMessage, UserRating
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -84,7 +85,7 @@ The EcoBerg Team 🌍
                 fail_silently=False,
             )
         except Account.DoesNotExist:
-            pass  
+            pass
 
         return Response(
             {'message': 'If an account with that email exists, a password reset link has been sent.'},
@@ -134,4 +135,40 @@ def dashboard(request):
         return Response(content, status=status.HTTP_200_OK)
 
     else:
-        return Response({'message': 'Method not allowed'}, status=status.HTTP_405_BAD_REQUEST) 
+        return Response({'message': 'Method not allowed'}, status=status.HTTP_405_BAD_REQUEST)
+
+
+class ContactMessageView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        subject = request.data.get('subject', '').strip()
+        message = request.data.get('message', '').strip()
+
+        if not subject or not message:
+            return Response({'error': 'Subject and message are required.'}, status=400)
+
+        ContactMessage.objects.create(
+            user=request.user,
+            subject=subject,
+            message=message,
+        )
+        return Response({'success': 'Message sent successfully.'}, status=201)
+
+
+class UserRatingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        rating = request.data.get('rating')
+        feedback = request.data.get('feedback', '').strip()
+
+        if not rating or not (1 <= int(rating) <= 5):
+            return Response({'error': 'Rating must be between 1 and 5.'}, status=400)
+
+        UserRating.objects.create(
+            user=request.user,
+            rating=int(rating),
+            feedback=feedback,
+        )
+        return Response({'success': 'Rating submitted successfully.'}, status=201)

@@ -15,6 +15,9 @@ import CarbonHistory from './components/CarbonHistory';
 import WorldMap from './components/WorldMap';
 import Dashboard from './components/Dashboard';
 import EmissionsTable from './components/Localghg';
+import Contact from './components/Contact';
+import Help from './components/Help';
+import Rate from './components/Rate';
 import Chatbot from './components/Chatbot.jsx'
 
 
@@ -38,6 +41,9 @@ const App = () => {
             <Route path="/worldmap" element={<WorldMap />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/emissions" element={<EmissionsTable />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/rate" element={<Rate />} />
           </Routes>
         </main>
         <Footer/>

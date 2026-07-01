@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Leaf, BarChart2, Building2, Users, ArrowRight, TrendingDown, Globe,
@@ -164,6 +164,7 @@ const steps = [
 
 
 export default function Home() {
+  const { user } = useContext(AuthContext);
   const [heroRef, heroIn] = useInView(0.1);
   const [featRef, featIn] = useInView(0.1);
   const [stepsRef, stepsIn] = useInView(0.1);
@@ -299,7 +300,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* wave divider */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-16">
             <path d="M0 80H1440V40C1200 80 960 0 720 40C480 80 240 0 0 40V80Z" fill="white" />
@@ -543,11 +543,11 @@ export default function Home() {
                   <h3 className="font-bold text-slate-800 text-base">{s.title}</h3>
                   <p className="text-slate-500 text-sm mt-1">{s.desc}</p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ══ 8. CTA BANNER ══ */}
       <section className="py-24 bg-emerald-950 relative overflow-hidden">

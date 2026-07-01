@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { 
-  Apple, 
-  Car, 
-  Flame, 
-  ShoppingBag, 
-  ChevronLeft, 
-  ChevronRight, 
-  Sparkles, 
-  CheckCircle,
-  Leaf
+  Apple, Car, Flame, ShoppingBag, 
+  ChevronLeft, ChevronRight, Sparkles, 
+  CheckCircle, Leaf, Home, Lightbulb
 } from 'lucide-react';
+import useAxios from '../utils/Axios';
 
 const steps = [
   {
@@ -187,8 +182,7 @@ const friendlyRecommendations = {
   },
 };
 
-// Flatten questions for the 1-by-1 UX flow
-const flatQuestions = steps.flatMap(step => 
+const flatQuestions = steps.flatMap(step =>
   step.questions.map(q => ({
     ...q,
     categoryId: step.id,
@@ -198,6 +192,8 @@ const flatQuestions = steps.flatMap(step =>
 );
 
 export default function Quiz() {
+  const axiosInstance = useAxios();
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState(null);
@@ -236,7 +232,6 @@ export default function Quiz() {
 
   const handleSelectOption = (value) => {
     setAnswers((prev) => ({ ...prev, [currentQuestion.key]: value }));
-    // The "delightful" auto-advance
     setTimeout(() => {
       if (currentIndex < totalQuestions - 1) {
         setCurrentIndex((prev) => prev + 1);
@@ -267,10 +262,7 @@ export default function Quiz() {
     }, 2200);
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/calculate/",
-        { inputs: answers }
-      );
+      const response = await axiosInstance.post("/api/calculate/", { inputs: answers });
       setResult(response.data);
     } catch (err) {
       setError("Server connection failed. Ensure your Django backend is running.");
@@ -287,7 +279,7 @@ export default function Quiz() {
     setError(null);
   };
 
-  // --- RESULTS VIEW ---
+  // Results view
   if (result) {
     const scoreColorClass = result.sustainability_score >= 75 ? "border-emerald-500 text-emerald-700" :
                             result.sustainability_score >= 50 ? "border-sky-500 text-sky-700" :
@@ -297,6 +289,7 @@ export default function Quiz() {
     return (
       <div className="w-full max-w-3xl mx-auto my-12 px-4 font-sans select-none">
         <div className="bg-white rounded-[32px] p-8 sm:p-12 border border-slate-100 shadow-2xl shadow-emerald-950/5">
+          
           <div className="mb-10 text-center">
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Your Impact Profile</h1>
             <p className="text-slate-400 font-medium">Detailed breakdown of your footprint</p>
@@ -313,36 +306,45 @@ export default function Quiz() {
             </div>
           </div>
 
-          {result.recommendations && (
+          {/* Recommendations */}
+          {result.recommendations && result.recommendations.length > 0 && (
             <div className="mb-10">
-              <h2 className="text-xl font-extrabold text-slate-900 mb-6">Action Plan</h2>
+              <div className="flex items-center gap-2 mb-6">
+                <Lightbulb className="h-5 w-5 text-emerald-600" />
+                <h2 className="text-xl font-extrabold text-slate-900">Action Plan</h2>
+              </div>
               <div className="grid gap-4">
                 {result.recommendations.map((rec) => {
                   const friendly = friendlyRecommendations[rec.id];
-                  const impactColor = rec.impact === "High" ? "bg-rose-100 text-rose-800" : "bg-emerald-100 text-emerald-800";
+                  const impactColor = rec.impact === "High" ? "bg-rose-100 text-rose-800" : 
+                                      rec.impact === "Medium" ? "bg-amber-100 text-amber-800" :
+                                      "bg-emerald-100 text-emerald-800";
                   return (
                     <div key={rec.id} className="bg-white rounded-[24px] p-6 border-2 border-slate-100 hover:border-emerald-200 transition-colors">
                       <div className="flex justify-between items-start gap-4 mb-3">
-                        <span className="font-extrabold text-slate-800 text-lg">
-                          {friendly ? friendly.what : rec.title}
-                        </span>
+                        <div className="flex items-start gap-2">
+                          <Lightbulb className="h-4 w-4 text-emerald-500 mt-1 shrink-0" />
+                          <span className="font-extrabold text-slate-800 text-base">
+                            {friendly ? friendly.what : rec.title}
+                          </span>
+                        </div>
                         <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shrink-0 ${impactColor}`}>
                           {rec.impact} Impact
                         </span>
                       </div>
                       {friendly ? (
                         <>
-                          <p className="text-sm text-slate-500 mb-2 font-medium leading-relaxed">
+                          <p className="text-sm text-slate-500 mb-2 font-medium leading-relaxed ml-6">
                             <strong className="text-slate-700">Why: </strong>{friendly.why}
                           </p>
-                          <p className="text-sm text-slate-500 mb-2 font-medium leading-relaxed">
+                          <p className="text-sm text-slate-500 mb-2 font-medium leading-relaxed ml-6">
                             <strong className="text-slate-700">How: </strong>{friendly.how}
                           </p>
                         </>
                       ) : (
-                        <p className="text-sm text-slate-500 mb-2 font-medium leading-relaxed">{rec.description}</p>
+                        <p className="text-sm text-slate-500 mb-2 font-medium leading-relaxed ml-6">{rec.description}</p>
                       )}
-                      <div className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg">
+                      <div className="mt-4 ml-6 inline-flex items-center gap-1.5 text-sm font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg">
                         <Sparkles className="h-4 w-4" />
                         <span>Save ~{rec.estimatedReduction}t CO₂/yr</span>
                       </div>
@@ -353,22 +355,32 @@ export default function Quiz() {
             </div>
           )}
 
-          <button
-            onClick={handleReset}
-            className="w-full mt-4 py-4 rounded-full text-sm font-bold uppercase tracking-wider bg-slate-100 hover:bg-slate-200 text-slate-600 transition active:scale-98"
-          >
-            Recalculate
-          </button>
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 mt-4">
+            <button
+              onClick={handleReset}
+              className="flex-1 py-4 rounded-full text-sm font-bold uppercase tracking-wider bg-slate-100 hover:bg-slate-200 text-slate-600 transition"
+            >
+              Recalculate
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="flex-1 py-4 rounded-full text-sm font-bold uppercase tracking-wider bg-emerald-900 hover:bg-emerald-800 text-white transition flex items-center justify-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Finish & Go Home
+            </button>
+          </div>
+
         </div>
       </div>
     );
   }
 
-  // --- QUIZ VIEW ---
+  // Quiz view
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 select-none font-sans min-h-[75vh] flex flex-col justify-center">
-      
-      {/* Loading Overlay */}
+
       {loading && (
         <div className="fixed inset-0 bg-white/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-300">
           <div className="relative mb-6">
@@ -387,7 +399,6 @@ export default function Quiz() {
         </div>
       )}
 
-      {/* Header & Progress */}
       <div className="mb-8">
         <div className="flex items-center justify-between text-xs font-semibold text-slate-400 tracking-wider uppercase mb-3">
           <div className="flex items-center space-x-2">
@@ -404,8 +415,8 @@ export default function Quiz() {
             const isCompleted = steps.findIndex(c => c.id === currentQuestion.categoryId) > idx;
             const isCurrent = currentQuestion.categoryId === cat.id;
             return (
-              <div 
-                key={cat.id} 
+              <div
+                key={cat.id}
                 className={`h-full rounded-full transition-all duration-500 ${
                   isCompleted ? 'bg-emerald-600' : isCurrent ? theme.bg : 'bg-slate-200'
                 }`}
@@ -415,14 +426,13 @@ export default function Quiz() {
         </div>
       </div>
 
-      {/* Main Card */}
       <div className="bg-white rounded-[32px] border border-slate-100 shadow-2xl shadow-emerald-950/4 p-6 sm:p-10 min-h-[420px] flex flex-col justify-between">
         <div>
           <div className="flex items-start justify-between gap-4 mb-6">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">
               {currentQuestion.label}
             </h1>
-            
+
             {currentQuestion.tooltip && (
               <div className="relative inline-flex group mt-1.5">
                 <button
@@ -447,7 +457,6 @@ export default function Quiz() {
             </div>
           )}
 
-          {/* Inputs Container */}
           <div className="mt-4">
             {currentQuestion.type === "select" && (
               <div className="grid grid-cols-1 gap-3">
@@ -458,9 +467,9 @@ export default function Quiz() {
                       key={opt.value}
                       onClick={() => handleSelectOption(opt.value)}
                       type="button"
-                      className={`w-full text-left p-4.5 rounded-[22px] border-2 transition-all duration-200 relative group flex items-center justify-between ${
-                        isSelected 
-                          ? `${theme.activeBorder} ${theme.activeBg}` 
+                      className={`w-full text-left p-4 rounded-[22px] border-2 transition-all duration-200 relative group flex items-center justify-between ${
+                        isSelected
+                          ? `${theme.activeBorder} ${theme.activeBg}`
                           : 'border-slate-100 bg-white hover:border-slate-200 hover:bg-slate-50/50'
                       }`}
                     >
@@ -475,8 +484,8 @@ export default function Quiz() {
                         )}
                       </div>
                       <div className={`rounded-full p-0.5 border flex-shrink-0 transition-all ${
-                        isSelected 
-                          ? 'border-emerald-600 bg-emerald-600 text-white' 
+                        isSelected
+                          ? 'border-emerald-600 bg-emerald-600 text-white'
                           : 'border-slate-200 text-transparent group-hover:border-slate-300'
                       }`}>
                         <CheckCircle className="h-4 w-4 fill-current text-white" />
@@ -514,13 +523,12 @@ export default function Quiz() {
           </div>
         </div>
 
-        {/* Footer Navigation */}
         <div className="flex items-center justify-between pt-8 border-t border-slate-100 mt-8">
           <button
             onClick={handleBack}
             disabled={currentIndex === 0}
             type="button"
-            className="flex items-center space-x-1 px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition bg-slate-100 hover:bg-slate-200 text-slate-600 disabled:opacity-0 disabled:pointer-events-none active:scale-98"
+            className="flex items-center space-x-1 px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition bg-slate-100 hover:bg-slate-200 text-slate-600 disabled:opacity-0 disabled:pointer-events-none"
           >
             <ChevronLeft className="h-4 w-4" />
             <span>Go Back</span>
@@ -530,7 +538,7 @@ export default function Quiz() {
             onClick={handleNext}
             disabled={currentValue === undefined || currentValue === ''}
             type="button"
-            className="flex items-center space-x-1.5 px-6 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider transition shadow-sm active:scale-98 disabled:opacity-50 disabled:pointer-events-none bg-emerald-900 hover:bg-emerald-800 text-white shadow-emerald-950/5"
+            className="flex items-center space-x-1.5 px-6 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider transition shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-emerald-900 hover:bg-emerald-800 text-white"
           >
             <span>
               {currentIndex === totalQuestions - 1 ? 'Analyze Lifestyle' : 'Next Step'}

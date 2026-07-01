@@ -7,7 +7,7 @@ import Login from './components/Login';
 import Quiz from './components/Quiz';
 import News from './components/News';
 import Home from './components/Home';
-import { Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import ChangePassword from './components/ChangePassword';
@@ -18,6 +18,7 @@ import EmissionsTable from './components/Localghg';
 import Contact from './components/Contact';
 import Help from './components/Help';
 import Rate from './components/Rate';
+import Chatbot from './components/Chatbot.jsx'
 
 
 
@@ -46,6 +47,7 @@ const App = () => {
           </Routes>
         </main>
         <Footer/>
+        <Chatbot/>
       </div>
     </AuthProvider>
   )

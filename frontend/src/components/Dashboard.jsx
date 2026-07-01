@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import WorldMap from './WorldMap';
+import LocalGHG from './Localghg';
 
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('map');
 
   const tabs = [
     { id: 'map', label: '🗺️ Emissions Map', },
+  {id : 'local', label: '📊 Local GHG Emissions', },  
   ];
 
-  return (
+  return (  
     <div className="min-h-screen bg-slate-50">
 
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
@@ -55,6 +57,11 @@ export const Dashboard = () => {
         {activeTab === 'map' && (
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <WorldMap />
+          </div>
+        )}
+        {activeTab === 'local' && (
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <LocalGHG />
           </div>
         )}
       </main>

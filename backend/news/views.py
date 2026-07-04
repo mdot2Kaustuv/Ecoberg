@@ -264,16 +264,29 @@ def dynamic_scraper(request):
         chart_element = soup.find_all('hc-charts')
         scraping_chart = chart_element[1]
 
-        if scraping_chart.has_attr('data-highcharts-chart'):
-            chart_data = scraping_chart['data-highcharts-chart']
+        if scraping_chart.has_attr('data-options'):
+             raw_json = scraping_chart['data-options']
+             chart_data = json.loads(raw_json)
 
-        chart_data = json.loads(chart_data)
+             years = chart_data.get('xAxis', {}).get('categories', [])
+             series_list = chart_data.get('series', [])
 
-        YEARS = chart_data['xAxis',{}].get['categories',[]]
-        LIST = chart_data.get('series',[])
+             parsed_data = []
+             for sector in series_list:
+                parsed_data.append({
+                    'sector': sector.get('name'),
+                    'emissions': sector.get('data', [])
+                })
 
-        for object in LIST :
-            sector_name =object.get('name',None)
-            data = object.get('data',[])
+             browser.close()
+            
+             return JsonResponse({
+                'years': years,
+                'sectors': parsed_data
+            })
+    
+    browser.close()
 
-    return JsonResponse({'years': YEARS, 'data': LIST})
+    return JsonResponse({"error": "Failed to scrape chart data"}, status=502)
+
+    

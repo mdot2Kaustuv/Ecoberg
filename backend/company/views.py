@@ -1,13 +1,12 @@
 import requests
 from requests.adapters import HTTPAdapter
-from urlib3.util.retry import Retry 
-import json 
+from urllib3.util.retry import Retry 
 from django.http import JsonResponse
 from decouple import config
 import pandas as pd 
 
 
-def company_carbon_footprint(requests) :
+def company_carbon_footprint(request) :
    API_KEY = config('COMPANY_CARBON_DATA')
    authorization_headers = {"Authorization":f"Bearer{API_KEY}"}
    url = "https://api.climatiq.io/data/v1/estimate"

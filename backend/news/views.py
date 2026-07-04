@@ -1,5 +1,7 @@
+import json
 from wsgiref import headers
-
+from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
 import requests
 from decouple import config
 from django.http import JsonResponse
@@ -247,3 +249,31 @@ def local_scraper(request) :
 
 
     return JsonResponse(clean_records, safe=False)
+
+
+def dynamic_scraper(request):
+    url = "https://www.worldometers.info/greenhouse-gas-emissions/nepal-greenhouse-gas-emissions/"
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+
+        page.goto(url)
+
+        soup = BeautifulSoup(page.content(), 'html.parser')
+
+        chart_element = soup.find_all('hc-charts')
+        scraping_chart = chart_element[1]
+
+        if scraping_chart.has_attr('data-highcharts-chart'):
+            chart_data = scraping_chart['data-highcharts-chart']
+
+        chart_data = json.loads(chart_data)
+
+        YEARS = chart_data['xAxis',{}].get['categories',[]]
+        LIST = chart_data.get('series',[])
+
+        for object in LIST :
+            sector_name =object.get('name',None)
+            data = object.get('data',[])
+
+    return JsonResponse({'years': YEARS, 'data': LIST})

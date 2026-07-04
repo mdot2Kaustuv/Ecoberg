@@ -20,10 +20,6 @@ const faqs = [
     a: 'We recommend retaking it every 3-6 months, or whenever your lifestyle changes significantly — like moving house, changing jobs, or switching your diet.',
   },
   {
-    q: 'Is my data private?',
-    a: 'Yes. Your quiz data is only visible to you when logged in. We do not sell or share your personal data with third parties.',
-  },
-  {
     q: 'How do I change my password?',
     a: 'Go to Settings (the gear icon in the header) and click "Change Password". You\'ll need to enter your current password and then your new one.',
   },

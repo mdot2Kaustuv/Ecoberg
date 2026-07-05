@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios" 
 import { 
   Apple, Car, Flame, ShoppingBag, 
   ChevronLeft, ChevronRight, Sparkles, 
@@ -15,86 +16,86 @@ const steps = [
     questions: [
       {
         key: "food_diet",
-        label: "How would you describe your typical diet?",
-        tooltip: "Vegan: only plant-based foods. Vegetarian: no meat or eggs. Eggitarian: no meat, but you eat eggs. Low meat: meat or fish 1-2 times a week. Standard: regular meat/fish. Heavy meat: meat with most meals.",
+        label: "What best describes your diet?",
+        tooltip: "Vegan: no animal products. Pure Vegetarian: traditional veg diet. Eggitarian: no meat/fish, eats eggs. Low meat: non-veg 1-2 times a week. Standard Non-Veg: regular poultry/fish/mutton. Heavy meat: meat with almost every meal.",
         type: "select",
         options: [
-          { value: "vegan", label: "Vegan", description: "Entirely plant-based, no animal products" },
-          { value: "pure_vegetarian", label: "Vegetarian", description: "Plant-based and dairy, no meat or eggs" },
-          { value: "lacto_ovo_vegetarian", label: "Eggitarian / Veg with Eggs", description: "No meat, but okay with eggs and dairy" },
-          { value: "low_meat", label: "Flexitarian / Low Meat", description: "Enjoy meat or fish just once or twice a week" },
-          { value: "regional_non_veg", label: "Standard Non-Vegetarian", description: "Regularly eat chicken, fish, or meat" },
-          { value: "heavy_meat", label: "Meat Lover", description: "Enjoy meat with almost every meal" },
+          { value: "vegan", label: "Vegan", description: "No animal products at all" },
+          { value: "pure_vegetarian", label: "Pure Vegetarian", description: "Traditional veg, no meat or eggs" },
+          { value: "lacto_ovo_vegetarian", label: "Eggitarian / Lacto-Ovo", description: "Eats eggs & dairy" },
+          { value: "low_meat", label: "Low Non-Veg", description: "Meat/fish once or twice a week" },
+          { value: "regional_non_veg", label: "Standard Non-Veg", description: "Regular chicken, fish, or mutton" },
+          { value: "heavy_meat", label: "Heavy Non-Veg", description: "Meat at almost every meal" },
         ],
       },
       {
         key: "food_waste",
-        label: "How much food tends to go to waste in your home?",
-        tooltip: "Throwing away food means wasted resources. 'Almost none' means you're great at planning. 'High' means leftovers or ingredients get tossed out quite often.",
+        label: "How much food gets wasted in your household?",
+        tooltip: "Food waste decomposing generates localized emissions. 'Almost None' means careful planning. 'High' means frequent disposal of spoiled ingredients.",
         type: "select",
         options: [
-          { value: "zero", label: "Almost none", description: "I rarely throw food away" },
-          { value: "low", label: "A little bit", description: "Occasional waste, but we try to plan ahead" },
-          { value: "high", label: "Quite a lot", description: "Leftovers or unused groceries often go to waste" },
+          { value: "zero", label: "Almost None", description: "I rarely throw food away" },
+          { value: "low", label: "Low", description: "Occasional waste, mostly planned meals" },
+          { value: "high", label: "High", description: "I throw away food or leftovers regularly" },
         ],
       },
     ],
   },
   {
     id: "transport",
-    title: "Getting Around",
+    title: "Transportation",
     icon: <Car className="h-5 w-5" />,
     questions: [
       {
         key: "trans_commute",
-        label: "How do you usually travel or commute?",
-        tooltip: "Pick the way you get around most of the time.",
+        label: "What is your primary mode of commute?",
+        tooltip: "Select your dominant transit choice.",
         type: "select",
         options: [
-          { value: "two_wheeler", label: "Motorcycle or Scooter", description: "Two-wheeler" },
-          { value: "public_transit", label: "Public Transit", description: "Metro, bus, or train" },
-          { value: "auto_rickshaw", label: "Auto-Rickshaw", description: "CNG, electric, or diesel rickshaw" },
-          { value: "gas_car", label: "Petrol or Diesel Car", description: "Standard gas-powered car" },
-          { value: "cng_hybrid_car", label: "CNG or Hybrid Car", description: "An alternative fuel or hybrid vehicle" },
-          { value: "electric_car", label: "Electric Vehicle (EV)", description: "Battery-powered car" },
-          { value: "active_travel", label: "Walk or Cycle", description: "Powered entirely by you!" },
+          { value: "two_wheeler", label: "Two-Wheeler", description: "Motorcycle or scooter" },
+          { value: "public_transit", label: "Public Transit", description: "Metro, city bus, or train" },
+          { value: "auto_rickshaw", label: "Auto-Rickshaw", description: "CNG, diesel, or electric rickshaws" },
+          { value: "gas_car", label: "Petrol or Diesel Car", description: "Standard combustion engine" },
+          { value: "cng_hybrid_car", label: "CNG or Hybrid Car", description: "Alternative fuel or hybrid engine" },
+          { value: "electric_car", label: "Electric Car (EV)", description: "Battery powered vehicle" },
+          { value: "active_travel", label: "Walk or Cycle", description: "No engine footprint" },
         ],
       },
       {
         key: "trans_distance_weekly",
-        label: "About how many kilometers do you travel in a week?",
+        label: "Weekly commuting distance",
         unit: "KM",
-        tooltip: "Think about your weekly total for work, school, grocery runs, and weekend trips.",
+        tooltip: "Combine estimated weekly travels for work, college, and errands.",
         type: "number",
-        placeholder: "e.g., 100",
+        placeholder: "e.g. 100",
       },
       {
         key: "trans_car_size",
-        label: "If you drive a car, what size is it?",
-        tooltip: "Hatchbacks are small city cars. Sedans are mid-sized. SUVs/Luxury vehicles are larger and heavier.",
+        label: "If you drive a car, what size category is it?",
+        tooltip: "Hatchback: compact city cars. Sedan: mid-sized passenger cars. SUV/Luxury: larger utility variants.",
         type: "select",
         options: [
-          { value: "hatchback", label: "Hatchback", description: "Small, compact city car (like a Swift or Alto)" },
-          { value: "sedan", label: "Sedan", description: "Mid-sized everyday car (like a Honda City)" },
-          { value: "suv_luxury", label: "SUV or Luxury Car", description: "Larger utility vehicle or premium car (like a Scorpio)" },
-          { value: "none", label: "I don't drive a car", description: "I don't use a car on a regular basis" },
+          { value: "hatchback", label: "Hatchback", description: "Small city car (e.g. Swift, Alto)" },
+          { value: "sedan", label: "Sedan", description: "Everyday mid-size car (e.g. Honda City)" },
+          { value: "suv_luxury", label: "SUV / Luxury", description: "Large utility vehicle (e.g. Scorpio)" },
+          { value: "none", label: "No Car", description: "I do not use a car regularly" },
         ],
       },
       {
         key: "trans_flights_short",
-        label: "How many short or domestic flights do you take per year?",
+        label: "Domestic or regional flights per year",
         unit: "Flights",
-        tooltip: "Count any one-way flight under 3 hours. A round trip counts as 2.",
+        tooltip: "Count each single one-way flight leg under 3 hours. A round trip equals 2.",
         type: "number",
-        placeholder: "e.g., 2",
+        placeholder: "e.g. 2",
       },
       {
         key: "trans_flights_long",
-        label: "How many long or international flights do you take per year?",
+        label: "International flights per year",
         unit: "Flights",
-        tooltip: "Count cross-continental flights over 3 hours. Connecting flights count as 1 trip.",
+        tooltip: "Count cross-continental flights over 3 hours. Connection legs count as 1.",
         type: "number",
-        placeholder: "e.g., 1",
+        placeholder: "e.g. 1",
       },
     ],
   },
@@ -105,36 +106,36 @@ const steps = [
     questions: [
       {
         key: "energy_size",
-        label: "What kind of home do you live in?",
-        tooltip: "This helps estimate your home's basic heating, cooling, and lighting needs.",
+        label: "What type of housing do you live in?",
+        tooltip: "Matches space sizes with common local building types.",
         type: "select",
         options: [
-          { value: "room_shared", label: "Single Room or Shared Apartment" },
-          { value: "apartment_small", label: "Small Apartment", description: "1 or 2 BHK" },
-          { value: "apartment_medium", label: "Large Apartment", description: "3 or more BHK" },
-          { value: "independent_house", label: "Independent House", description: "A standalone house, villa, or bungalow" },
+          { value: "room_shared", label: "Single Room or Shared Space" },
+          { value: "apartment_small", label: "Small Apartment", description: "1-2 BHK" },
+          { value: "apartment_medium", label: "Large Apartment", description: "3+ BHK" },
+          { value: "independent_house", label: "Independent House", description: "Bungalow or Villa" },
         ],
       },
       {
         key: "energy_ac",
-        label: "How often do you run the Air Conditioning?",
-        tooltip: "AC units use a lot of electricity, which impacts your overall carbon footprint.",
+        label: "How intensively do you use Air Conditioning?",
+        tooltip: "AC draws heavily from regional grids.",
         type: "select",
         options: [
-          { value: "none", label: "No AC", description: "We use fans or air coolers instead" },
-          { value: "seasonal", label: "Only in peak summer", description: "Just during heatwaves or very hot months" },
-          { value: "heavy", label: "Frequently / Heavy use", description: "Multiple units running on most days" },
+          { value: "none", label: "No AC", description: "Fans or air coolers only" },
+          { value: "seasonal", label: "Seasonal", description: "Turned on during heatwaves/peak summer" },
+          { value: "heavy", label: "Heavy Usage", description: "Multiple units running frequently" },
         ],
       },
       {
         key: "energy_cooking",
-        label: "What is your main household cooking setup?",
-        tooltip: "LPG cylinders are standard. Electric induction plates are cleaner, depending on where your electricity comes from.",
+        label: "What is your primary household cooking fuel?",
+        tooltip: "LPG cylinders are the baseline. Electric induction cuts footprints depending on grid.",
         type: "select",
         options: [
-          { value: "lpg", label: "LPG Gas Cylinder", description: "Piped or bottled cooking gas" },
-          { value: "induction_electric", label: "Electric Induction", description: "A modern electric cooktop" },
-          { value: "biomass_wood", label: "Traditional Stove", description: "Wood, charcoal, or biomass stoves" },
+          { value: "lpg", label: "LPG Cylinder", description: "Piped or bottled cooking gas" },
+          { value: "induction_electric", label: "Electric Induction", description: "Modern electric cooktop" },
+          { value: "biomass_wood", label: "Biomass / Wood", description: "Traditional cooking stoves" },
         ],
       },
     ],
@@ -146,13 +147,13 @@ const steps = [
     questions: [
       {
         key: "shopping_intensity",
-        label: "How would you describe your shopping habits?",
-        tooltip: "Frugal: you fix things and only buy what you need. Moderate: you upgrade occasionally. Active: you love keeping up with the latest trends.",
+        label: "How would you describe your consumer shopping habits?",
+        tooltip: "Frugal: repair culture. Moderate: predictable upgrades. Active: routine trend updates.",
         type: "select",
         options: [
-          { value: "frugal", label: "Minimalist / Frugal", description: "I prefer repairing things and buying only the essentials" },
-          { value: "moderate", label: "Moderate Shopper", description: "I pick up new clothes or gadgets every now and then" },
-          { value: "active", label: "Frequent Shopper", description: "I regularly buy new clothes, gadgets, and trending items" },
+          { value: "frugal", label: "Frugal", description: "Repair culture, buying absolute essentials" },
+          { value: "moderate", label: "Moderate", description: "Occasional new clothing or gear" },
+          { value: "active", label: "Active Shopper", description: "Frequent purchases of trending items" },
         ],
       },
     ],
@@ -161,24 +162,24 @@ const steps = [
 
 const friendlyRecommendations = {
   rec_food_diet: {
-    what: "Try adding a few more plant-based meals to your week.",
-    why: "Traditional vegetarian staples like lentils, beans, and paneer have a much lower environmental impact than raising poultry or livestock.",
-    how: "Swap out meat for a few dinners a week and enjoy classic, protein-packed dishes like dal, chole, or a hearty vegetable curry.",
+    what: "Incorporate more plant-based days into your week.",
+    why: "Traditional regional vegetarian alternatives like lentils and pulses carry highly optimized carbon footprints compared to farmed poultry or mutton production.",
+    how: "Swap a few non-veg dinners for classic protein-rich meals like dal-bhat, paneer curry, or chickpea alternatives.",
   },
   rec_trans_public: {
-    what: "Consider taking the public transit for longer commutes.",
-    why: "Taking the train or a bus keeps you out of traffic jams and cuts down on the emissions your car creates while sitting idly in gridlock.",
-    how: "Try using the local metro or express bus lanes for your daily route to work or school instead of driving individual trips.",
+    what: "Shift long commutes towards Metros or public transit links.",
+    why: "Using localized mass rail or urban bus lines keeps you out of heavy gridlock traffic, preventing extensive vehicle emissions from idling engine hours.",
+    how: "Use the local metro networks or rapid bus lanes for fixed daily office routes rather than reliance on individual car paths.",
   },
   rec_energy_ac: {
-    what: "Set your air conditioner to a comfortable 24°C.",
-    why: "Bumping your AC setting up toward 24°C instead of freezing at 18°C can ease the strain on the power grid and lower your home energy bill by up to 24%.",
-    how: "Use your AC's Eco mode or set a sleep timer at night so it switches off automatically once the room is cool.",
+    what: "Keep air conditioners adjusted to a stable 24°C base.",
+    why: "Every degree you step up from 18°C up to 24°C protects grid storage and curtails baseline home appliance energy pull by up to 24%.",
+    how: "Set an automatic shutdown timer at night or default your air condition unit straight to Eco / 24°C mode.",
   },
   rec_energy_cooking: {
-    what: "Give electric induction cooking a try.",
-    why: "Switching to an induction cooktop means you're cooking with electricity rather than burning fossil fuels directly from a gas cylinder.",
-    how: "Pick up a portable, single-burner induction plate to handle quick daily tasks like boiling water, making tea, or prepping breakfast.",
+    what: "Transition cooking setups over to Electric Induction cooktops.",
+    why: "Using electric induction heating avoids direct fossil resource burn from fossil LPG cylinder dependencies.",
+    how: "Introduce a portable single-burner induction plate alongside your regular gas line to manage daily boiling and standard tasks cleanly.",
   },
 };
 
@@ -244,7 +245,7 @@ export default function Quiz() {
     setAnswers((prev) => ({ ...prev, [currentQuestion.key]: val }));
   };
 
-  const handleSubmit = async () => {
+ const handleSubmit = async () => {
     setLoading(true);
     setError(null);
 
@@ -262,16 +263,39 @@ export default function Quiz() {
     }, 2200);
 
     try {
-      const response = await axiosInstance.post("/api/calculate/", { inputs: answers });
+      // 1. Sanitize the data: Convert any empty string numbers ("") to 0 
+      // so Django's serializers don't reject them as bad data types
+      const cleanedAnswers = { ...answers };
+      flatQuestions.forEach(q => {
+        if (q.type === 'number') {
+          if (cleanedAnswers[q.key] === '' || cleanedAnswers[q.key] === undefined || cleanedAnswers[q.key] === null) {
+            cleanedAnswers[q.key] = 0;
+          }
+        }
+      });
+
+      // 2. Wrap it back inside the 'inputs' key that your Django view expects,
+      // while keeping the direct standard axios call.
+      const response = await axios.post("http://127.0.0.1:8000/api/calculate/", { 
+        inputs: cleanedAnswers 
+      });
+      
       setResult(response.data);
     } catch (err) {
-      setError("Server connection failed. Ensure your Django backend is running.");
+      console.error("Quiz submission failure context:", err);
+      
+      // If Django sent back specific validation errors, show them!
+      if (err.response && err.response.data) {
+        console.log("Django Validation Errors:", err.response.data);
+        setError(`Server validation failed: ${JSON.stringify(err.response.data)}`);
+      } else {
+        setError("Server connection failed. Ensure your Django backend is running.");
+      }
     } finally {
       clearInterval(interval);
       setLoading(false);
     }
   };
-
   const handleReset = () => {
     setAnswers({});
     setResult(null);
@@ -279,7 +303,8 @@ export default function Quiz() {
     setError(null);
   };
 
-  // Results view
+ 
+ 
   if (result) {
     const scoreColorClass = result.sustainability_score >= 75 ? "border-emerald-500 text-emerald-700" :
                             result.sustainability_score >= 50 ? "border-sky-500 text-sky-700" :

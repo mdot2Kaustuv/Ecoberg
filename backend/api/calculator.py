@@ -86,7 +86,7 @@ class CarbonCalculator:
 
         recommendations = []
 
-        # ✅ loosened: any non-veg diet gets food recommendation
+       
         if diet in ['heavy_meat', 'regional_non_veg', 'low_meat']:
             recommendations.append({
                 'id': 'rec_food_diet',
@@ -97,7 +97,7 @@ class CarbonCalculator:
                 'category': 'food',
             })
 
-        # ✅ loosened: removed km_weekly > 100 condition
+      
         if commute_mode in ['gas_car', 'two_wheeler', 'auto_rickshaw']:
             recommendations.append({
                 'id': 'rec_trans_public',
@@ -108,7 +108,6 @@ class CarbonCalculator:
                 'category': 'transportation',
             })
 
-        # ac recommendation
         if ac_usage in ['heavy', 'seasonal']:  # ✅ loosened: seasonal too
             recommendations.append({
                 'id': 'rec_energy_ac',
@@ -119,7 +118,6 @@ class CarbonCalculator:
                 'category': 'energy',
             })
 
-        # cooking recommendation
         if cooking_fuel in ['lpg', 'biomass_wood']:  # ✅ loosened: biomass too
             recommendations.append({
                 'id': 'rec_energy_cooking',

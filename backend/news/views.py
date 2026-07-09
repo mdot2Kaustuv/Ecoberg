@@ -12,7 +12,7 @@ import re
 import unicodedata 
 
 def NewsList(request):
-    access_key = config('YOUR_ACCESS_KEY')
+    access_key = config('MEDIASTACK_ACCESS_KEY')
 
     parameters = {
    'access_key': access_key,

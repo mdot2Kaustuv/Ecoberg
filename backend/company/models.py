@@ -12,3 +12,4 @@ class Company(models.Model):
     fuel_footprint = models.FloatField(default=0.0)
     travel_footprint = models.FloatField(default=0.0)
     electricity_footprint = models.FloatField(default=0.0)
+    total_footprint = models.FloatField(default=0.0)

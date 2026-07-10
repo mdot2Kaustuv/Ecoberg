@@ -207,11 +207,11 @@ def company_emission(request) :
       serializer = CompanySerializer(data=request.data)
 
       if serializer.is_valid():
-           freight = freight_emission(request.data)
-           travel = travel_emission(request.data)
-           hotel = hotel_emission(request.data)
-           electricity = electricity_emission(request.data)
-           fuel = fuel_emission(request.data)
+           freight = freight_emission(request.data,0.0)
+           travel = travel_emission(request.data,0.0)
+           hotel = hotel_emission(request.data,0.0)
+           electricity = electricity_emission(request.data,0.0)
+           fuel = fuel_emission(request.data,0.0)
 
            company = serializer.save(
                user=request.user,
@@ -219,8 +219,11 @@ def company_emission(request) :
                 travel_footprint=travel,
                 hotel_footprint=hotel,
                 electricity_footprint=electricity,
-                fuel_footprint=fuel
+                fuel_footprint=fuel ,
+                total_footprint=freight + travel + hotel + electricity + fuel
               )
       return JsonResponse({"company": CompanySerializer(company).data}, status=201)
    
    return JsonResponse({"error": "Invalid data"}, status=400)
+
+

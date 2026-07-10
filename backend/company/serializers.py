@@ -8,11 +8,12 @@ class CompanySerializer(serializers.ModelSerializer):
             'id', 'user', 'company_name', 'usage',
             'freight_footprint', 'hotel_footprint',
             'fuel_footprint', 'travel_footprint',
-            'electricity_footprint', 'created_at'
+            'electricity_footprint', 'total_footprint', 'created_at'
         ]
         read_only_fields = [
             'id', 'user', 'freight_footprint',
             'hotel_footprint', 'fuel_footprint',
             'travel_footprint', 'electricity_footprint',
+            'total_footprint',
             'created_at'
         ]

@@ -1,6 +1,9 @@
 from django.http import JsonResponse
 import requests
 from decouple import config
+from rest_framework.permissions import IsAuthenticated
+from .models import Company
+from .serializers import CompanySerializer 
 
 #Function to get freight emissions
 def freight_emission(request):
@@ -37,7 +40,7 @@ def freight_emission(request):
     return JsonResponse({'data': data})
 
 #Function to get flight emissions
-def flight_emission(request):
+def travel_emission(request):
   api_key = config('EMISSION_DEV_API_KEY')
   
   headers = {
@@ -195,4 +198,29 @@ def fuel_emission(request) :
 
     data = response.json()
     return JsonResponse({"data": data})
-        
+
+
+def company_emission(request) :
+   permission_class = [IsAuthenticated]
+   
+   def post(self , request) :
+      serializer = CompanySerializer(data=request.data)
+
+      if serializer.is_valid():
+           freight = freight_emission(request.data)
+           travel = travel_emission(request.data)
+           hotel = hotel_emission(request.data)
+           electricity = electricity_emission(request.data)
+           fuel = fuel_emission(request.data)
+
+           company = serializer.save(
+               user=request.user,
+                freight_footprint=freight ,
+                travel_footprint=travel,
+                hotel_footprint=hotel,
+                electricity_footprint=electricity,
+                fuel_footprint=fuel
+              )
+      return JsonResponse({"company": CompanySerializer(company).data}, status=201)
+   
+   return JsonResponse({"error": "Invalid data"}, status=400)

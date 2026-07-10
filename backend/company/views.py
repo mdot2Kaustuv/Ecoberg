@@ -4,6 +4,7 @@ from decouple import config
 from rest_framework.permissions import IsAuthenticated
 from .models import Company
 from .serializers import CompanySerializer 
+from rest_framework.decorators import  permission_classes
 
 #Function to get freight emissions
 def freight_emission(request):
@@ -201,7 +202,7 @@ def fuel_emission(request) :
 
 
 def company_emission(request) :
-   permission_class = [IsAuthenticated]
+   permission_classes = [IsAuthenticated]
    
    def post(self , request) :
       serializer = CompanySerializer(data=request.data)

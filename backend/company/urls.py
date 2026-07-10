@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import company_emissions
+from .views import company_emission
 
 urlpatterns = [
-    path('calculate/', company_emissions.as_view(), name='calculate_footprint'),
+    path('calculate/', company_emission, name='calculate_footprint'),
 
 ]

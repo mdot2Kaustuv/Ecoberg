@@ -93,7 +93,7 @@ const Header = () => {
                       to="/company"
                       className="px-4 py-2 rounded-full text-sm font-semibold transition-all border-2 bg-transparent border-emerald-600 text-emerald-700 hover:bg-emerald-50 active:scale-95"
                     >
-                      Register Your Company
+                      Carbon Footprint for Your Company
                     </Link>
 
                     {/* Extra space before username */}
@@ -160,7 +160,7 @@ const Header = () => {
                       to="/company"
                       className="px-4 py-2 rounded-full text-sm font-semibold transition-all border-2 bg-transparent border-emerald-600 text-emerald-700 hover:bg-emerald-50 active:scale-95"
                     >
-                      Register Your Company
+                      Calculate Carbon Footprint for Your Company
                     </Link>
                   </>
                 )}
@@ -214,7 +214,7 @@ const Header = () => {
                     onClick={() => setIsOpen(false)}
                     className="block w-full text-center px-4 py-2.5 rounded-full text-sm font-semibold border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 transition"
                   >
-                    Register Your Company
+                    Calculate Carbon Footprint for Your Company
                   </Link>
                   <button
                     onClick={() => { setIsOpen(false); setSettingsOpen(true); }}
@@ -252,7 +252,7 @@ const Header = () => {
                     onClick={() => setIsOpen(false)}
                     className="block w-full text-center px-4 py-2.5 rounded-full text-sm font-semibold border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 transition"
                   >
-                    Register Your Company
+                    Calculate Carbon Footprint for Your Company
                   </Link>
                 </>
               )}

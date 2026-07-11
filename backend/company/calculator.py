@@ -42,7 +42,7 @@ def travel_emission(data, default=0.0):
 
     try:
         response = requests.get(
-            "https://api.emissions.dev/v1/flight/emissions", headers=_headers(), params=params
+            "https://api.emissions.dev/v1/travel/emissions", headers=_headers(), params=params
         )
         response.raise_for_status()
         result = response.json()

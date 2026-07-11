@@ -1,37 +1,19 @@
 import React, { useState } from "react";
+import { Section, Field, inputClass } from "./FormPrimitives";
+import FuelSection, { fuelSectionDefaults } from "./FuelSection";
 
-// ---------------------------------------------------------------------------
-// Adjust to match your urls.py route for the `company_emission` view.
 const API_BASE = "/company/calculate";
-// ---------------------------------------------------------------------------
-
-const FUEL_OPTIONS = [
-  { value: "natural_gas", label: "Natural Gas", units: ["kwh", "therm", "m3"] },
-  { value: "lpg", label: "LPG", units: ["kwh", "litre", "kg"] },
-  { value: "cng", label: "CNG", units: ["kwh", "kg"] },
-  { value: "biogas", label: "Biogas / Biomethane", units: ["kwh"] },
-  { value: "diesel", label: "Diesel (Gas Oil)", units: ["kwh", "litre"] },
-  { value: "petrol", label: "Petrol (Gasoline)", units: ["kwh", "litre"] },
-  { value: "kerosene", label: "Burning Oil / Kerosene", units: ["kwh", "litre"] },
-  { value: "fuel_oil", label: "Fuel Oil (Heavy)", units: ["kwh", "litre"] },
-  { value: "red_diesel", label: "Gas Oil (Red Diesel)", units: ["kwh", "litre"] },
-  { value: "biodiesel", label: "Biodiesel (B100 / FAME)", units: ["litre"] },
-  { value: "hvo", label: "HVO", units: ["litre"] },
-  { value: "bioethanol", label: "Bioethanol", units: ["litre"] },
-  { value: "wood_logs", label: "Wood Logs", units: ["kwh", "kg"] },
-  { value: "wood_pellets", label: "Wood Pellets", units: ["kwh", "kg"] },
-  { value: "coal_industrial", label: "Coal (Industrial)", units: ["kwh", "kg"] },
-  { value: "coal_domestic", label: "Coal (Domestic)", units: ["kwh", "kg"] },
-];
 
 const initialForm = {
-  // Freight
+
   freight_origin_country: "NP",
   freight_destination_country: "NP",
   freight_origin_location: "Kathmandu",
   freight_destination_location: "Kathmandu",
   freight_weight: "",
   // Travel
+  travel_origin_country: "NP",
+  travel_destination_country: "NP",
   travel_origin_location: "Kathmandu",
   travel_destination_location: "",
   travel_mode: "car",
@@ -48,35 +30,8 @@ const initialForm = {
   electricity_country_code: "NP",
   electricity_cloud_provider: "aws",
   // Fuel
-  fuel_type: "natural_gas",
-  fuel_unit: "kwh",
-  fuel_amount: "",
-  fuel_include_wtt: true,
+  ...fuelSectionDefaults,
 };
-
-function Section({ eyebrow, title, children }) {
-  return (
-    <div className="border border-emerald-900/10 rounded-xl p-5">
-      <span className="font-mono text-[11px] tracking-wide uppercase text-amber-600 font-medium">
-        {eyebrow}
-      </span>
-      <h3 className="font-display font-semibold text-lg text-emerald-950 mt-0.5 mb-4">{title}</h3>
-      <div className="grid grid-cols-2 gap-3">{children}</div>
-    </div>
-  );
-}
-
-function Field({ label, span2, children }) {
-  return (
-    <div className={`flex flex-col gap-1.5 ${span2 ? "col-span-2" : ""}`}>
-      <label className="text-xs font-medium text-slate-500">{label}</label>
-      {children}
-    </div>
-  );
-}
-
-const inputClass =
-  "font-mono text-sm bg-[#F8FAF9] border border-emerald-900/15 rounded-lg px-3 py-2.5 text-slate-800 outline-none focus:border-emerald-600 transition-colors w-full";
 
 export default function RegisterCompany() {
   const [form, setForm] = useState(initialForm);
@@ -87,8 +42,6 @@ export default function RegisterCompany() {
   function update(key, value) {
     setForm((f) => ({ ...f, [key]: value }));
   }
-
-  const fuelOptions = FUEL_OPTIONS.find((f) => f.value === form.fuel_type)?.units || ["kwh"];
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -188,6 +141,22 @@ export default function RegisterCompany() {
           </Section>
 
           <Section eyebrow="Scope 3 · Business travel" title="Travel">
+            <Field label="Origin country code">
+              <input
+                className={inputClass}
+                maxLength={2}
+                value={form.travel_origin_country}
+                onChange={(e) => update("travel_origin_country", e.target.value.toUpperCase())}
+              />
+            </Field>
+            <Field label="Destination country code">
+              <input
+                className={inputClass}
+                maxLength={2}
+                value={form.travel_destination_country}
+                onChange={(e) => update("travel_destination_country", e.target.value.toUpperCase())}
+              />
+            </Field>
             <Field label="Origin location">
               <input
                 className={inputClass}
@@ -325,47 +294,7 @@ export default function RegisterCompany() {
             </Field>
           </Section>
 
-          <Section eyebrow="Scope 1 · Stationary combustion" title="Fuel">
-            <Field label="Fuel type">
-              <select
-                className={inputClass}
-                value={form.fuel_type}
-                onChange={(e) => {
-                  const next = FUEL_OPTIONS.find((f) => f.value === e.target.value);
-                  update("fuel_type", e.target.value);
-                  update("fuel_unit", next.units[0]);
-                }}
-              >
-                {FUEL_OPTIONS.map((f) => (
-                  <option key={f.value} value={f.value}>
-                    {f.label}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Unit">
-              <select
-                className={inputClass}
-                value={form.fuel_unit}
-                onChange={(e) => update("fuel_unit", e.target.value)}
-              >
-                {fuelOptions.map((u) => (
-                  <option key={u} value={u}>
-                    {u}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Amount" span2>
-              <input
-                className={inputClass}
-                type="number"
-                min="0"
-                value={form.fuel_amount}
-                onChange={(e) => update("fuel_amount", e.target.value)}
-              />
-            </Field>
-          </Section>
+          <FuelSection values={form} onChange={update} />
 
           <button
             type="submit"

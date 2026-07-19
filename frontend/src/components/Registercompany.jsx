@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import api from "./api";
 import FreightSection, { freightDefaults, validateFreight } from "./FreightSection";
 import TravelSection, { travelDefaults, validateTravel } from "./TravelSection";
 import HotelSection, { hotelDefaults, validateHotel } from "./HotelSection";
@@ -6,8 +7,8 @@ import ElectricitySection, { electricityDefaults, validateElectricity } from "./
 import FuelSection, { fuelDefaults, validateFuel } from "./FuelSection";
 
 // ---------------------------------------------------------------------------
-// Adjust to match your urls.py route for the `company_emission` view.
-const API_BASE = "/company/calculate";
+// The path Django expects, relative to api.js's baseURL (http://localhost:8000).
+const API_PATH = "/company/calculate/";
 // ---------------------------------------------------------------------------
 
 const initialForm = {
@@ -59,21 +60,19 @@ export default function RegisterCompany() {
     setCompany(null);
 
     try {
-      const res = await fetch(API_BASE, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          travel_return_trip: String(form.travel_return_trip),
-          fuel_include_wtt: String(form.fuel_include_wtt),
-          electricity_include_wtt: String(form.electricity_include_wtt),
-          electricity_include_td_losses: String(form.electricity_include_td_losses),
-        }),
+      const res = await api.post(API_PATH, {
+        ...form,
+        travel_return_trip: String(form.travel_return_trip),
+        fuel_include_wtt: String(form.fuel_include_wtt),
+        electricity_include_wtt: String(form.electricity_include_wtt),
+        electricity_include_td_losses: String(form.electricity_include_td_losses),
       });
-      const body = await res.json();
 
-      if (!res.ok) {
+      setCompany(res.data.company);
+    } catch (err) {
+      if (err.response) {
+        // Server responded with a non-2xx status — surface Django's error payload.
+        const body = err.response.data;
         const message =
           typeof body?.error === "string"
             ? body.error
@@ -81,12 +80,10 @@ export default function RegisterCompany() {
             ? JSON.stringify(body.error)
             : "Couldn't calculate your company's footprint. Check the values and try again.";
         setSubmitError(message);
-        return;
+      } else {
+        // Request never reached the server — network error, CORS block, wrong baseURL, etc.
+        setSubmitError("Couldn't reach the server. Check that Django is running and CORS is configured.");
       }
-
-      setCompany(body.company);
-    } catch (err) {
-      setSubmitError("Couldn't reach the server. Is the backend running?");
     } finally {
       setLoading(false);
     }

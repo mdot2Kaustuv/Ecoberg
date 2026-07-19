@@ -23,6 +23,7 @@ import Electricity from './components/Electricitysection.jsx';
 import Fuel from './components/Fuelsection.jsx';
 import Travel from './components/Travelsection.jsx';
 import Hotelsection from './components/Hotelsection';
+import Registercompany from './components/Registercompany.jsx';
 
 
 
@@ -34,6 +35,7 @@ const App = () => {
         <main className="grow">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/registercompany" element={<Registercompany />} />
             <Route path="/register" element={<Register />} />
             <Route path="/electricity" element={<Electricity />} />
             <Route path="/fuel" element={<Fuel />} />

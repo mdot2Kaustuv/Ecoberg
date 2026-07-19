@@ -19,6 +19,10 @@ import Contact from './components/Contact';
 import Help from './components/Help';
 import Rate from './components/Rate';
 import Chatbot from './components/Chatbot.jsx'
+import Electricity from './components/Electricitysection.jsx';
+import Fuel from './components/Fuelsection.jsx';
+import Travel from './components/Travelsection.jsx';
+import Hotelsection from './components/Hotelsection';
 
 
 
@@ -31,6 +35,10 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/electricity" element={<Electricity />} />
+            <Route path="/fuel" element={<Fuel />} />
+            <Route path="/travel" element={<Travel />} />
+            <Route path="/hotels" element={<Hotelsection />} />
             <Route path="/login" element={<Login />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

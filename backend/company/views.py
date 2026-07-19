@@ -8,7 +8,7 @@ from.calculator import (
     electricity_emission,
     fuel_emission,
 )
-from backend.company.serializers import CompanySerializer
+from .serializers import CompanySerializer
 
 
 @api_view(["POST"])

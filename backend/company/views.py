@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated , AllowAny
 from django.http import JsonResponse
 from.calculator import (
     freight_emission,
@@ -12,18 +12,21 @@ from .serializers import CompanySerializer
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def company_emission(request):
     serializer = CompanySerializer(data=request.data)
 
     if not serializer.is_valid():
         return JsonResponse({"error": serializer.errors}, status=400)
 
-    freight = freight_emission(request.data, 0.0)
-    travel = travel_emission(request.data, 0.0)
-    hotel = hotel_emission(request.data, 0.0)
-    electricity = electricity_emission(request.data, 0.0)
-    fuel = fuel_emission(request.data, 0.0)
+    # Use validated_data instead of raw request.data for security and safety
+    data = serializer.validated_data
+
+    freight = freight_emission(data, 0.0)
+    travel = travel_emission(data, 0.0)
+    hotel = hotel_emission(data, 0.0)
+    electricity = electricity_emission(data, 0.0)
+    fuel = fuel_emission(data, 0.0)
 
     company = serializer.save(
         user=request.user,

@@ -12,7 +12,7 @@ from .serializers import CompanySerializer
 
 
 @api_view(["POST"])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def company_emission(request):
     serializer = CompanySerializer(data=request.data)
 

@@ -13,7 +13,13 @@ def freight_emission(data, default=0.0):
         "origin_location": data.get("freight_origin_location", "Kathmandu"),
         "destination_location": data.get("freight_destination_location", "Kathmandu"),
         "weight": data.get("freight_weight", 1000),
+        "unit": data.get("freight_weight_unit", "kg"),
+        "fuel_source": data.get("freight_fuel_source", "diesel"),
     }
+    transport_mode = data.get("freight_transport_mode")
+    if transport_mode:
+        params["transport_mode"] = transport_mode
+
     try:
         response = requests.get(
             "https://api.emissions.dev/v1/freight/emissions", headers=_headers(), params=params
@@ -29,13 +35,15 @@ def freight_emission(data, default=0.0):
 def travel_emission(data, default=0.0):
     mode = data.get("travel_mode", "car")
     params = {
+        "origin_country": data.get("travel_origin_country", "NP"),
+        "destination_country": data.get("travel_destination_country", "NP"),
         "origin_location": data.get("travel_origin_location", "Kathmandu"),
         "destination_location": data.get("travel_destination_location", "Kathmandu"),
         "transport_mode": mode,
         "return_trip": data.get("travel_return_trip", "false"),
         "passengers": data.get("travel_passengers", 1),
     }
-    if mode == "car":
+    if mode in ("car", "taxi"):
         params["vehicle_type"] = data.get("travel_vehicle_type", "diesel")
     if mode == "flight":
         params["cabin_class"] = data.get("travel_cabin_class", "economy")
@@ -54,7 +62,7 @@ def travel_emission(data, default=0.0):
 
 def hotel_emission(data, default=0.0):
     params = {
-        "country_code": data.get("hotel_country_code", "NP"),
+        "country": data.get("hotel_country_code", "NP"),
         "nights": data.get("hotel_nights", 1),
         "rooms": data.get("hotel_rooms", 1),
     }
@@ -72,11 +80,24 @@ def hotel_emission(data, default=0.0):
 
 def electricity_emission(data, default=0.0):
     params = {
-        "unit": data.get("electricity_unit", "kWh"),
         "kwh": data.get("electricity_kwh", 100),
-        "country_code": data.get("electricity_country_code", "NP"),
-        "cloud_provider": data.get("electricity_cloud_provider", "aws"),
+        "unit": data.get("electricity_unit", "kwh"),
+        "country": data.get("electricity_country_code", "NP"),
+        "include_wtt": data.get("electricity_include_wtt", "true"),
+        "include_td_losses": data.get("electricity_include_td_losses", "false"),
     }
+
+    state = data.get("electricity_state")
+    if state:
+        params["state"] = state
+
+    cloud_provider = data.get("electricity_cloud_provider")
+    cloud_region = data.get("electricity_cloud_region")
+    if cloud_provider:
+        params["cloud_provider"] = cloud_provider
+    if cloud_region:
+        params["cloud_region"] = cloud_region
+
     try:
         response = requests.get(
             "https://api.emissions.dev/v1/electricity/emissions", headers=_headers(), params=params

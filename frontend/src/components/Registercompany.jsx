@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import api from "./api";
+import useAxios from "../utils/Axios";
 import FreightSection, { freightDefaults, validateFreight } from "./FreightSection";
 import TravelSection, { travelDefaults, validateTravel } from "./TravelSection";
 import HotelSection, { hotelDefaults, validateHotel } from "./HotelSection";
 import ElectricitySection, { electricityDefaults, validateElectricity } from "./ElectricitySection";
 import FuelSection, { fuelDefaults, validateFuel } from "./FuelSection";
 
-// ---------------------------------------------------------------------------
-// The path Django expects, relative to api.js's baseURL (http://localhost:8000).
 const API_PATH = "/company/calculate/";
-// ---------------------------------------------------------------------------
 
 const initialForm = {
   ...freightDefaults,
@@ -30,6 +27,7 @@ function validate(form) {
 }
 
 export default function RegisterCompany() {
+  const api = useAxios();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -57,7 +55,6 @@ export default function RegisterCompany() {
 
     setLoading(true);
     setSubmitError(null);
-    setCompany(null);
 
     try {
       const res = await api.post(API_PATH, {
@@ -71,7 +68,6 @@ export default function RegisterCompany() {
       setCompany(res.data.company);
     } catch (err) {
       if (err.response) {
-        // Server responded with a non-2xx status — surface Django's error payload.
         const body = err.response.data;
         const message =
           typeof body?.error === "string"
@@ -81,7 +77,6 @@ export default function RegisterCompany() {
             : "Couldn't calculate your company's footprint. Check the values and try again.";
         setSubmitError(message);
       } else {
-        // Request never reached the server — network error, CORS block, wrong baseURL, etc.
         setSubmitError("Couldn't reach the server. Check that Django is running and CORS is configured.");
       }
     } finally {
@@ -89,9 +84,16 @@ export default function RegisterCompany() {
     }
   }
 
+  // -------------------------------------------------------------------------
+  // DUMMY PAGE TRIGGER: If calculation succeeded, show the Dummy Results Page
+  // -------------------------------------------------------------------------
+  if (company) {
+    return <DummyResultsPage company={company} onRecalculate={() => setCompany(null)} />;
+  }
+
   return (
-    <div className="flex justify-center px-4 py-10 bg-[#F8FAF9]">
-      <div className="w-full max-w-2xl bg-white border border-emerald-900/10 rounded-2xl shadow-sm p-8">
+    <div className="flex justify-center px-4 py-10 bg-[#F8FAF9] min-h-screen">
+      <div className="w-full max-w-2xl bg-white border border-emerald-900/10 rounded-2xl shadow-sm p-8 h-fit">
         <div className="mb-7">
           <span className="font-mono text-[11px] tracking-wide uppercase text-amber-600 font-medium">
             Company setup
@@ -126,48 +128,88 @@ export default function RegisterCompany() {
             {submitError}
           </div>
         )}
-
-        {company && <FootprintSummary company={company} />}
       </div>
     </div>
   );
 }
 
-function FootprintSummary({ company }) {
+// ===========================================================================
+// DUMMY PAGE COMPONENT
+// ===========================================================================
+function DummyResultsPage({ company, onRecalculate }) {
   const rows = [
     { label: "Freight", value: company.freight_footprint },
     { label: "Travel", value: company.travel_footprint },
-    { label: "Hotel", value: company.hotel_footprint },
+    { label: "Hotel Stays", value: company.hotel_footprint },
     { label: "Electricity", value: company.electricity_footprint },
     { label: "Fuel", value: company.fuel_footprint },
   ];
   const max = Math.max(...rows.map((r) => Number(r.value) || 0), 1);
 
   return (
-    <div className="mt-6 pt-6 border-t border-emerald-900/10">
-      <div className="flex items-baseline gap-2 mb-5">
-        <span className="font-mono font-semibold text-4xl text-amber-600">
-          {Number(company.total_footprint).toLocaleString(undefined, { maximumFractionDigits: 1 })}
-        </span>
-        <span className="text-sm text-slate-500">kg CO2e total</span>
-      </div>
-
-      <div className="flex flex-col gap-2.5">
-        {rows.map((r) => (
-          <div key={r.label} className="flex items-center gap-3">
-            <span className="w-24 text-xs text-slate-500">{r.label}</span>
-            <div className="flex-1 h-2 rounded-full bg-[#F8FAF9] border border-emerald-900/10 overflow-hidden">
-              <div
-                className="h-full bg-emerald-700"
-                style={{ width: `${(Number(r.value) / max) * 100}%` }}
-              />
-            </div>
-            <span className="w-20 text-right font-mono text-xs text-emerald-950">
-              {Number(r.value).toFixed(1)}kg
+    <div className="min-h-screen bg-[#F8FAF9] px-4 py-10 flex justify-center">
+      <div className="w-full max-w-4xl space-y-6">
+        
+        {/* Header / Success Banner */}
+        <div className="bg-emerald-900 text-white rounded-2xl p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <span className="inline-block px-3 py-1 bg-emerald-800 text-amber-400 font-mono text-xs rounded-full uppercase tracking-wider mb-3">
+              Calculation Complete
             </span>
+            <h1 className="text-3xl font-bold font-display">Company Footprint Overview</h1>
+            <p className="text-emerald-200/80 text-sm mt-1">
+              Your carbon emissions have been calculated and saved to your account.
+            </p>
           </div>
-        ))}
+          <button
+            onClick={onRecalculate}
+            className="bg-amber-500 hover:bg-amber-400 text-emerald-950 font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors shadow-sm"
+          >
+            Recalculate Form
+          </button>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* Main Footprint Card */}
+          <div className="bg-white border border-emerald-900/10 rounded-2xl p-6 shadow-sm md:col-span-2">
+            <h3 className="font-semibold text-emerald-950 text-lg mb-1">Breakdown by Category</h3>
+            <p className="text-xs text-slate-500 mb-6">Emissions per segment (kg CO2e)</p>
+
+            <div className="flex items-baseline gap-2 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+              <span className="font-mono font-bold text-4xl text-amber-600">
+                {Number(company.total_footprint).toLocaleString(undefined, { maximumFractionDigits: 1 })}
+              </span>
+              <span className="text-sm font-medium text-slate-600">kg CO2e Total</span>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              {rows.map((r) => (
+                <div key={r.label} className="flex items-center gap-3">
+                  <span className="w-28 text-xs font-medium text-slate-600">{r.label}</span>
+                  <div className="flex-1 h-3 rounded-full bg-slate-100 overflow-hidden">
+                    <div
+                      className="h-full bg-emerald-700 rounded-full transition-all duration-500"
+                      style={{ width: `${(Number(r.value) / max) * 100}%` }}
+                    />
+                  </div>
+                  <span className="w-20 text-right font-mono text-xs font-semibold text-emerald-950">
+                    {Number(r.value).toFixed(1)} kg
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+
+
+      
+          </div>
+
+        </div>
+
       </div>
-    </div>
+  
   );
 }

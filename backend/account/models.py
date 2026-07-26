@@ -66,6 +66,17 @@ class ContactMessage(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.subject}"
 
+class CompanyOTP(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='company_otps')
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def is_expired(self):
+        return (timezone.now() - self.created_at).total_seconds() > 600  # 10 minutes
+
+    def __str__(self):
+        return f"OTP for {self.user.username}"
 
 class UserRating(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='ratings')

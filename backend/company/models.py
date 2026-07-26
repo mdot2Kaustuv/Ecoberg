@@ -10,3 +10,6 @@ class Company(models.Model):
     travel_footprint = models.FloatField(default=0.0)
     electricity_footprint = models.FloatField(default=0.0)
     total_footprint = models.FloatField(default=0.0)
+    company_name = models.CharField(max_length=255, blank=True, null=True)
+    industry = models.CharField(max_length=255, blank=True, null=True)
+    registration_number = models.CharField(max_length=100, blank=True, null=True)

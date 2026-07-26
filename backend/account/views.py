@@ -11,7 +11,8 @@ from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from .models import ContactMessage, UserRating
+from .models import ContactMessage, UserRating, CompanyOTP
+import random
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -172,3 +173,58 @@ class UserRatingView(APIView):
             feedback=feedback,
         )
         return Response({'success': 'Rating submitted successfully.'}, status=201)
+    
+class VerifyPasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        password = request.data.get('password', '')
+        if not password:
+            return Response({'error': 'Password is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.check_password(password):
+            return Response({'ok': True}, status=status.HTTP_200_OK)
+        return Response({'ok': False}, status=status.HTTP_200_OK)
+
+
+class SendCompanyOTPView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        code = f"{random.randint(0, 999999):06d}"
+        CompanyOTP.objects.create(user=request.user, code=code)
+        send_mail(
+            subject='Your EcoBerg Company Verification Code',
+            message=f'''Hi {request.user.username},
+
+Your one-time verification code to register your company is:
+
+{code}
+
+This code expires in 10 minutes. If you didn't request this, you can ignore this email.
+
+The EcoBerg Team 🌍
+''',
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[request.user.email],
+            fail_silently=False,
+        )
+        return Response({'message': 'OTP sent to your email.'}, status=status.HTTP_200_OK)
+
+
+class VerifyCompanyOTPView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        code = request.data.get('code', '').strip()
+        if not code:
+            return Response({'error': 'Code is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        otp = CompanyOTP.objects.filter(
+            user=request.user, code=code, is_used=False
+        ).order_by('-created_at').first()
+        if not otp:
+            return Response({'ok': False, 'error': 'Invalid code.'}, status=status.HTTP_200_OK)
+        if otp.is_expired():
+            return Response({'ok': False, 'error': 'Code has expired. Please request a new one.'}, status=status.HTTP_200_OK)
+        otp.is_used = True
+        otp.save()
+        return Response({'ok': True}, status=status.HTTP_200_OK)

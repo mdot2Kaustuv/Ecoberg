@@ -24,8 +24,8 @@ import Fuel from './components/Fuelsection.jsx';
 import Travel from './components/Travelsection.jsx';
 import Hotelsection from './components/Hotelsection';
 import Registercompany from './components/Registercompany.jsx';
-
-
+import CompanyOnboarding from './components/CompanyOnboarding.jsx';
+import CompanyDetailsForm from './components/CompanyDetailsForm.jsx';
 
 const App = () => {
   return (
@@ -54,6 +54,8 @@ const App = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/help" element={<Help />} />
             <Route path="/rate" element={<Rate />} />
+            <Route path="/company-register" element={<CompanyOnboarding />} />
+            <Route path="/company-details" element={<CompanyDetailsForm />} />
           </Routes>
         </main>
         <Footer/>

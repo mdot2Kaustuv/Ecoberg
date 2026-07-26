@@ -90,10 +90,10 @@ const Header = () => {
                 {user ? (
                   <>
                     <Link
-                      to="/company"
+                      to="/company-register"
                       className="px-4 py-2 rounded-full text-sm font-semibold transition-all border-2 bg-transparent border-emerald-600 text-emerald-700 hover:bg-emerald-50 active:scale-95"
                     >
-                      Carbon Footprint for Your Company
+                      Register Company?
                     </Link>
 
                     {/* Extra space before username */}
@@ -157,7 +157,7 @@ const Header = () => {
                       Sign Up
                     </Link>
                     <Link
-                      to="/company"
+                      to="/company-register"
                       className="px-4 py-2 rounded-full text-sm font-semibold transition-all border-2 bg-transparent border-emerald-600 text-emerald-700 hover:bg-emerald-50 active:scale-95"
                     >
                       Calculate Carbon Footprint for Your Company
@@ -210,7 +210,7 @@ const Header = () => {
                     {user.username || user.email}
                   </div>
                   <Link
-                    to="/company"
+                    to="/company-register"
                     onClick={() => setIsOpen(false)}
                     className="block w-full text-center px-4 py-2.5 rounded-full text-sm font-semibold border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 transition"
                   >
@@ -248,7 +248,7 @@ const Header = () => {
                     </Link>
                   </div>
                   <Link
-                    to="/company"
+                    to="/company-register"
                     onClick={() => setIsOpen(false)}
                     className="block w-full text-center px-4 py-2.5 rounded-full text-sm font-semibold border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 transition"
                   >

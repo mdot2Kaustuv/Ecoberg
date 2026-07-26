@@ -7,6 +7,9 @@ import {
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
 } from 'recharts';
+import { useContext } from 'react';
+import AuthContext from '../utils/AuthContext';
+
 
 /* ── hooks ── */
 const useInView = (threshold = 0.15) => {
@@ -169,6 +172,8 @@ export default function Home() {
   const [stepsRef, stepsIn] = useInView(0.1);
   const [catRef, catIn] = useInView(0.1);
   const [methodRef, methodIn] = useInView(0.1);
+  const { user } = useContext(AuthContext);
+  
 
   return (
     <div className="bg-white overflow-x-hidden">
@@ -228,12 +233,14 @@ export default function Home() {
                   Calculate my footprint
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link
-                  to="/register"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-full text-base transition-all backdrop-blur-sm"
-                >
-                  Create free account
-                </Link>
+                {!user && (
+                  <Link
+                    to="/register"
+                    className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-full text-base transition-all backdrop-blur-sm"
+                  >
+                    Create free account
+                  </Link>
+                )}
               </div>
             </div>
 

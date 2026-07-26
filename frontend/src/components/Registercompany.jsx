@@ -57,7 +57,17 @@ export default function RegisterCompany() {
     setSubmitError(null);
 
     try {
+      // Company name/industry/registration number captured on the previous
+      // onboarding step (CompanyDetailsForm.jsx), stashed in sessionStorage.
+      let companyDetails = {};
+      try {
+        companyDetails = JSON.parse(sessionStorage.getItem("companyDetails") || "{}");
+      } catch {
+        companyDetails = {};
+      }
+
       const res = await api.post(API_PATH, {
+        ...companyDetails,
         ...form,
         travel_return_trip: String(form.travel_return_trip),
         fuel_include_wtt: String(form.fuel_include_wtt),
@@ -65,6 +75,7 @@ export default function RegisterCompany() {
         electricity_include_td_losses: String(form.electricity_include_td_losses),
       });
 
+      sessionStorage.removeItem("companyDetails");
       setCompany(res.data.company);
     } catch (err) {
       if (err.response) {
@@ -85,10 +96,10 @@ export default function RegisterCompany() {
   }
 
   // -------------------------------------------------------------------------
-  // DUMMY PAGE TRIGGER: If calculation succeeded, show the Dummy Results Page
+  // If calculation succeeded, show the results page instead of the form.
   // -------------------------------------------------------------------------
   if (company) {
-    return <DummyResultsPage company={company} onRecalculate={() => setCompany(null)} />;
+    return <CompanyResultsPage company={company} onRecalculate={() => setCompany(null)} />;
   }
 
   return (
@@ -134,9 +145,9 @@ export default function RegisterCompany() {
 }
 
 // ===========================================================================
-// DUMMY PAGE COMPONENT
+// RESULTS PAGE COMPONENT
 // ===========================================================================
-function DummyResultsPage({ company, onRecalculate }) {
+function CompanyResultsPage({ company, onRecalculate }) {
   const rows = [
     { label: "Freight", value: company.freight_footprint },
     { label: "Travel", value: company.travel_footprint },
@@ -149,14 +160,16 @@ function DummyResultsPage({ company, onRecalculate }) {
   return (
     <div className="min-h-screen bg-[#F8FAF9] px-4 py-10 flex justify-center">
       <div className="w-full max-w-4xl space-y-6">
-        
+
         {/* Header / Success Banner */}
         <div className="bg-emerald-900 text-white rounded-2xl p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
             <span className="inline-block px-3 py-1 bg-emerald-800 text-amber-400 font-mono text-xs rounded-full uppercase tracking-wider mb-3">
               Calculation Complete
             </span>
-            <h1 className="text-3xl font-bold font-display">Company Footprint Overview</h1>
+            <h1 className="text-3xl font-bold font-display">
+              {company.company_name ? `${company.company_name} — Footprint Overview` : "Company Footprint Overview"}
+            </h1>
             <p className="text-emerald-200/80 text-sm mt-1">
               Your carbon emissions have been calculated and saved to your account.
             </p>
@@ -171,7 +184,7 @@ function DummyResultsPage({ company, onRecalculate }) {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/* Main Footprint Card */}
           <div className="bg-white border border-emerald-900/10 rounded-2xl p-6 shadow-sm md:col-span-2">
             <h3 className="font-semibold text-emerald-950 text-lg mb-1">Breakdown by Category</h3>
@@ -202,14 +215,27 @@ function DummyResultsPage({ company, onRecalculate }) {
             </div>
           </div>
 
-
-
-      
+          {/* Company Details Card */}
+          <div className="bg-white border border-emerald-900/10 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-semibold text-emerald-950 text-lg mb-4">Company Details</h3>
+            <div className="space-y-3 text-sm">
+              <div>
+                <span className="block text-xs text-slate-400 uppercase tracking-wide">Name</span>
+                <span className="font-semibold text-slate-800">{company.company_name || "—"}</span>
+              </div>
+              <div>
+                <span className="block text-xs text-slate-400 uppercase tracking-wide">Industry</span>
+                <span className="font-semibold text-slate-800">{company.industry || "—"}</span>
+              </div>
+              <div>
+                <span className="block text-xs text-slate-400 uppercase tracking-wide">Registration No.</span>
+                <span className="font-semibold text-slate-800">{company.registration_number || "—"}</span>
+              </div>
+            </div>
           </div>
 
         </div>
-
       </div>
-  
+    </div>
   );
 }

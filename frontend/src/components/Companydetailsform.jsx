@@ -25,13 +25,12 @@ export default function CompanyDetailsForm() {
   const [captcha, setCaptcha] = useState(makeCaptcha());
   const [captchaInput, setCaptchaInput] = useState("");
 
-  const [stage, setStage] = useState("form"); // form | otp | done
+  const [stage, setStage] = useState("form");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // fresh captcha each time the form is shown
     setCaptcha(makeCaptcha());
   }, []);
 
@@ -67,12 +66,10 @@ export default function CompanyDetailsForm() {
     try {
       const res = await api.post("/account/verify-password/", { password });
       if (res.data.ok) {
-        // password correct — save company details to sessionStorage for the
-        // next step (the actual footprint calculator form reads it from here)
         sessionStorage.setItem("companyDetails", JSON.stringify(details));
         navigate("/registercompany");
       } else {
-        // wrong password — fall back to OTP
+
         await api.post("/account/send-company-otp/", {});
         setStage("otp");
       }

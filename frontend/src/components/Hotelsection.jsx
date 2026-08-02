@@ -1,6 +1,6 @@
 import React from "react";
-
-import { Section, Field, fieldClass } from "./FormPrimitives";
+import { Section, Field } from "./FormPrimitives";
+import CountrySelect from "./CountrySelect";
 
 const COUNTRY_CODE_RE = /^[A-Z]{2}$/;
 
@@ -18,7 +18,7 @@ function isIntInRange(v, min, max) {
 export function validateHotel(values) {
   const errors = {};
   if (!COUNTRY_CODE_RE.test(values.hotel_country_code))
-    errors.hotel_country_code = "2-letter country code (e.g. NP)";
+    errors.hotel_country_code = "Select a country";
   if (!isIntInRange(values.hotel_nights, 1, 365))
     errors.hotel_nights = "Whole number between 1 and 365";
   if (!isIntInRange(values.hotel_rooms, 1, 100))
@@ -29,17 +29,16 @@ export function validateHotel(values) {
 export default function HotelSection({ values, errors, onChange }) {
   return (
     <Section eyebrow="Scope 3 · Accommodation" title="Hotel">
-      <Field label="Country code" error={errors.hotel_country_code}>
-        <input
-          className={fieldClass(!!errors.hotel_country_code)}
-          maxLength={2}
+      <Field label="Country" error={errors.hotel_country_code}>
+        <CountrySelect
           value={values.hotel_country_code}
-          onChange={(e) => onChange("hotel_country_code", e.target.value.toUpperCase())}
+          error={errors.hotel_country_code}
+          onChange={(v) => onChange("hotel_country_code", v)}
         />
       </Field>
       <Field label="Nights (1–365)" error={errors.hotel_nights}>
         <input
-          className={fieldClass(!!errors.hotel_nights)}
+          className="w-full rounded-md border px-3 py-2 text-sm"
           type="number"
           min="1"
           max="365"
@@ -49,7 +48,7 @@ export default function HotelSection({ values, errors, onChange }) {
       </Field>
       <Field label="Rooms (1–100)" span2 error={errors.hotel_rooms}>
         <input
-          className={fieldClass(!!errors.hotel_rooms)}
+          className="w-full rounded-md border px-3 py-2 text-sm"
           type="number"
           min="1"
           max="100"

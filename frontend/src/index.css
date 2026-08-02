@@ -16,9 +16,9 @@ body {
 .chatbot-floating-btn {
   /* The layout logic */
   position: fixed;
-  bottom: 24px;      /* Distance from the bottom of the screen */
-  right: 24px;       /* Distance from the right of the screen */
-  z-index: 9999;     /* Ensures it stays on top of other elements */
+  bottom: 24px;     
+  right: 24px;       
+  z-index: 9999;     
 
   /* The visual styling (customize to match your site) */
   width: 60px;

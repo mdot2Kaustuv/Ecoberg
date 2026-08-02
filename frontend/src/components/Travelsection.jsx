@@ -3,7 +3,8 @@ import { Section, Field, fieldClass } from "./FormPrimitives";
 
 export const TRAVEL_MODES = ["car", "flight", "rail", "bus", "ferry", "taxi"];
 
-// Per the docs these are the fuel-type values the API accepts for car/taxi vehicle_type.
+import { COUNTRIES, capitalOf } from "./countries";
+
 export const TRAVEL_VEHICLE_TYPES = [
   { value: "petrol", label: "Petrol" },
   { value: "diesel", label: "Diesel" },
@@ -47,21 +48,41 @@ export function validateTravel(values) {
 export default function TravelSection({ values, errors, onChange }) {
   return (
     <Section eyebrow="Scope 3 · Business travel" title="Travel">
-      <Field label="Origin country code" error={errors.travel_origin_country}>
-        <input
+      <Field label="Origin country" error={errors.travel_origin_country}>
+        <select
           className={fieldClass(!!errors.travel_origin_country)}
-          maxLength={2}
           value={values.travel_origin_country}
-          onChange={(e) => onChange("travel_origin_country", e.target.value.toUpperCase())}
-        />
+          onChange={(e) => {
+            const code = e.target.value;
+            onChange("travel_origin_country", code);
+            onChange("travel_origin_location", capitalOf(code));
+          }}
+        >
+          <option value="">Select a country</option>
+          {COUNTRIES.map((c) => (
+            <option key={c.code} value={c.code}>
+              {c.name}
+            </option>
+          ))}
+        </select>
       </Field>
-      <Field label="Destination country code" error={errors.travel_destination_country}>
-        <input
+      <Field label="Destination country" error={errors.travel_destination_country}>
+        <select
           className={fieldClass(!!errors.travel_destination_country)}
-          maxLength={2}
           value={values.travel_destination_country}
-          onChange={(e) => onChange("travel_destination_country", e.target.value.toUpperCase())}
-        />
+          onChange={(e) => {
+            const code = e.target.value;
+            onChange("travel_destination_country", code);
+            onChange("travel_destination_location", capitalOf(code));
+          }}
+        >
+          <option value="">Select a country</option>
+          {COUNTRIES.map((c) => (
+            <option key={c.code} value={c.code}>
+              {c.name}
+            </option>
+          ))}
+        </select>
       </Field>
       <Field label="Origin location">
         <input

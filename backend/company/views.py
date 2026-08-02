@@ -19,7 +19,6 @@ def company_emission(request):
     if not serializer.is_valid():
         return JsonResponse({"error": serializer.errors}, status=400)
 
-    # Use validated_data instead of raw request.data for security and safety
     data = request.data
     freight = freight_emission(data, 0.0)
     travel = travel_emission(data, 0.0)

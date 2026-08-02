@@ -13,10 +13,6 @@ const terms = [
     body: "We only use the numbers you enter to calculate emissions and generate recommendations. We never sell or share your company data.",
   },
   {
-    title: "Estimates, not audits",
-    body: "EcoBerg gives you a solid sustainability estimate based on standard emission factors — it isn't a substitute for a certified carbon audit.",
-  },
-  {
     title: "You can update anytime",
     body: "Recalculate as often as you like. Your latest submission is what shows up on your company dashboard.",
   },
@@ -37,6 +33,7 @@ export default function CompanyOnboarding() {
   };
 
   return (
+    
     <div className="flex justify-center px-4 py-12 bg-[#F8FAF9] min-h-screen">
       <div className="w-full max-w-2xl">
 
@@ -52,7 +49,8 @@ export default function CompanyOnboarding() {
           </p>
         </div>
 
-        {/* Hard auth gate — shown first, blocks everything else */}
+    
+
         {!isLoggedIn && (
           <div className="bg-white border border-amber-200 rounded-2xl shadow-sm p-8 text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-50 text-amber-600 mb-4">

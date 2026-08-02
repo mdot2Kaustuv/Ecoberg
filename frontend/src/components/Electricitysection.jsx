@@ -1,5 +1,6 @@
 import React from "react";
 import { Section, Field, fieldClass } from "./FormPrimitives";
+import CountrySelect from "./CountrySelect";
 
 export const ELECTRICITY_UNITS = ["kwh", "mwh", "wh"];
 export const CLOUD_PROVIDERS = [
@@ -9,8 +10,8 @@ export const CLOUD_PROVIDERS = [
   { value: "azure", label: "Azure" },
 ];
 
-const COUNTRY_CODE_RE = /^[A-Z]{2}$/;
 const US_STATE_RE = /^[A-Z]{2}$/;
+const COUNTRY_CODE_RE = /^[A-Z]{2}$/;
 
 export const electricityDefaults = {
   electricity_kwh: "",
@@ -32,7 +33,7 @@ export function validateElectricity(values) {
   if (!isPositiveNumber(values.electricity_kwh))
     errors.electricity_kwh = "Enter usage greater than 0";
   if (!COUNTRY_CODE_RE.test(values.electricity_country_code))
-    errors.electricity_country_code = "2-letter country code (e.g. NP)";
+    errors.electricity_country_code = "Select a country";
   if (values.electricity_state && !US_STATE_RE.test(values.electricity_state))
     errors.electricity_state = "2-letter US state code (e.g. CA)";
   if (values.electricity_cloud_provider && !values.electricity_cloud_region)
@@ -65,12 +66,11 @@ export default function ElectricitySection({ values, errors, onChange }) {
           ))}
         </select>
       </Field>
-      <Field label="Country code" error={errors.electricity_country_code}>
-        <input
-          className={fieldClass(!!errors.electricity_country_code)}
-          maxLength={2}
+      <Field label="Country" error={errors.electricity_country_code}>
+        <CountrySelect
           value={values.electricity_country_code}
-          onChange={(e) => onChange("electricity_country_code", e.target.value.toUpperCase())}
+          error={errors.electricity_country_code}
+          onChange={(v) => onChange("electricity_country_code", v)}
         />
       </Field>
       <Field label="US state (optional)" error={errors.electricity_state}>

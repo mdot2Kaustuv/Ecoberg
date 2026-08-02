@@ -5,21 +5,38 @@ from decouple import config
 def _headers():
     return {"Authorization": f"Bearer {config('EMISSION_DEV_API_KEY')}"}
 
+def _log_http_error(name, e):
+    try:
+        detail = e.response.json()
+    except ValueError:
+        detail = e.response.text
+    print(f"{name} failed ({e.response.status_code}), using default: {detail}")
 
+_WEIGHT_TO_KG = {
+    "kg": 1,
+    "g": 0.001,
+    "lb": 0.453592,
+    "tonne": 1000,
+}
+ 
 def freight_emission(data, default=0.0):
+    raw_weight = float(data.get("freight_weight", 1000) or 0)
+    weight_unit = data.get("freight_weight_unit", "kg")
+    weight_kg = raw_weight * _WEIGHT_TO_KG.get(weight_unit, 1)
+ 
     params = {
         "origin_country": data.get("freight_origin_country", "NP"),
         "destination_country": data.get("freight_destination_country", "NP"),
         "origin_location": data.get("freight_origin_location", "Kathmandu"),
         "destination_location": data.get("freight_destination_location", "Kathmandu"),
-        "weight": data.get("freight_weight", 1000),
-        "unit": data.get("freight_weight_unit", "kg"),
+        "weight": weight_kg,
+        "unit": "kg",  # the API rejects 'tonne' despite the docs listing it as valid; kg is confirmed to work
         "fuel_source": data.get("freight_fuel_source", "diesel"),
     }
     transport_mode = data.get("freight_transport_mode")
     if transport_mode:
         params["transport_mode"] = transport_mode
-
+ 
     try:
         response = requests.get(
             "https://api.emissions.dev/v1/freight/emissions", headers=_headers(), params=params
@@ -27,10 +44,12 @@ def freight_emission(data, default=0.0):
         response.raise_for_status()
         result = response.json()
         return result["data"]["attributes"]["emissions"]["co2e"]
+    except requests.exceptions.HTTPError as e:
+        _log_http_error("freight_emission", e)
+        return default
     except (requests.exceptions.RequestException, KeyError, TypeError) as e:
         print(f"freight_emission failed, using default: {e}")
         return default
-
 
 def travel_emission(data, default=0.0):
     mode = data.get("travel_mode", "car")

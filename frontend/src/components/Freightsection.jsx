@@ -1,5 +1,6 @@
 import React from "react";
 import { Section, Field, fieldClass } from "./FormPrimitives";
+import { COUNTRIES, capitalOf } from "./countries";
 
 export const FREIGHT_TRANSPORT_MODES = [
   { value: "", label: "Auto" },
@@ -43,21 +44,41 @@ export function validateFreight(values) {
 export default function FreightSection({ values, errors, onChange }) {
   return (
     <Section eyebrow="Scope 3 · Logistics" title="Freight">
-      <Field label="Origin country code" error={errors.freight_origin_country}>
-        <input
+      <Field label="Origin country" error={errors.freight_origin_country}>
+        <select
           className={fieldClass(!!errors.freight_origin_country)}
-          maxLength={2}
           value={values.freight_origin_country}
-          onChange={(e) => onChange("freight_origin_country", e.target.value.toUpperCase())}
-        />
+          onChange={(e) => {
+            const code = e.target.value;
+            onChange("freight_origin_country", code);
+            onChange("freight_origin_location", capitalOf(code));
+          }}
+        >
+          <option value="">Select a country</option>
+          {COUNTRIES.map((c) => (
+            <option key={c.code} value={c.code}>
+              {c.name}
+            </option>
+          ))}
+        </select>
       </Field>
-      <Field label="Destination country code" error={errors.freight_destination_country}>
-        <input
+      <Field label="Destination country" error={errors.freight_destination_country}>
+        <select
           className={fieldClass(!!errors.freight_destination_country)}
-          maxLength={2}
           value={values.freight_destination_country}
-          onChange={(e) => onChange("freight_destination_country", e.target.value.toUpperCase())}
-        />
+          onChange={(e) => {
+            const code = e.target.value;
+            onChange("freight_destination_country", code);
+            onChange("freight_destination_location", capitalOf(code));
+          }}
+        >
+          <option value="">Select a country</option>
+          {COUNTRIES.map((c) => (
+            <option key={c.code} value={c.code}>
+              {c.name}
+            </option>
+          ))}
+        </select>
       </Field>
       <Field label="Origin location">
         <input
